@@ -1,43 +1,49 @@
 "use client";
 
-import { File } from "lucide-react";
+import { File, Download } from "lucide-react";
 import React from "react";
 import { useDropzone } from "react-dropzone";
 import {
   Card,
   CardContent,
 } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
-import { SectionCards } from "@/components/section-cards"
+import { Button } from "@/components/ui/button";
+import { cn, formatFileSize } from "@/lib/utils";
+import { ImageCard } from "@/components/image-card"
+import { QualitySlider } from "@/components/quality-slider";
+import { useCompressionUpload } from "@/hooks/useCompressionUpload";
+import { downloadBatchAsZip } from "@/lib/imageCompressor";
 
 export function FileUpload() {
-  const [files, setFiles] = React.useState<File[]>([]);
+  const [quality, setQuality] = React.useState(75);
+  const { compressionResults, errors, handleDrop, isCompressing, clearResults } = useCompressionUpload(quality);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop: (acceptedFiles) =>
-      setFiles((prevFiles) => {
-        const existing = new Set(prevFiles.map(f => f.name + f.size));
-        const newFiles = acceptedFiles.filter(f => !existing.has(f.name + f.size));
-        return [...prevFiles, ...newFiles];
-      }),
+    onDrop: handleDrop,
+    noClick: isCompressing,
+    noDrag: isCompressing,
   });
 
-  const filesList = files.map((file) => ({
-    file,
-    fileName: file.name.split('.').slice(0, -1).join('.'),
-    fileType: file.type.toUpperCase().split("/")[1], 
-    fileSize: `${(file.size / 1024 / 1024).toFixed(2)} MB`, 
-    newFilePercent: "~77%", 
-    newFileSize: `${(file.size / 1024).toFixed(2)} KB`, 
+  const filesList = compressionResults.map((result) => ({
+    id: result.id,
+    file: result.originalFile,
+    fileName: result.originalFile.name.split('.').slice(0, -1).join('.'),
+    fileType: result.originalFile.type.toUpperCase().split("/")[1], 
+    fileSize: formatFileSize(result.originalSize),
+    newFilePercent: result.compressionRatio ? `${(result.compressionRatio).toFixed(0)}%` : '--', 
+    newFileSize: result.compressedSize ? formatFileSize(result.compressedSize) : '--',
+    compressedBlob: result.compressedBlob,
+    isCompressing: result.isCompressing,
   }));
 
   return (
-    <div className="items-center justify-center">
-      <Card className="sm:mx-auto sm:max-w-xl">
+    <div className="px-4 sm:px-6 lg:px-8">
+      <Card className="mx-auto max-w-2xl">
         <CardContent>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-6">
             <div className="col-span-full">
-              <div className="font-medium">
+              
+              <div className="font-medium mt-6">
                 File(s) upload
               </div>
               <div
@@ -73,25 +79,55 @@ export function FileUpload() {
                   </div>
                 </div>
               </div>
+              <QualitySlider quality={quality} onQualityChange={setQuality} />
               <p className="mt-2 text-sm leading-5 text-muted-foreground sm:flex sm:items-center sm:justify-between">
-                <span>All file types are allowed to upload.</span>
+                <span>Supported formats: JPEG, PNG, WebP, AVIF</span>
                 <span className="pl-1 sm:pl-0">Max. size per file: 50MB</span>
               </p>
+              {errors.length > 0 && (
+                <div className="mt-3 rounded-md bg-destructive/10 p-3">
+                  <p className="text-sm font-medium text-destructive">Upload failed:</p>
+                  <ul className="mt-2 space-y-1 text-sm text-destructive/90">
+                    {errors.map((error, idx) => (
+                      <li key={idx}>• {error}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
               
             </div>
           </div>
         </CardContent>
       </Card>
       {filesList.length > 0 && (
-        <div>
-          <ul role="list" className="mt-4 space-y-4">
-            {filesList.map((fileData) => (
-              <li key={fileData.file.name + fileData.file.size}>
-                <SectionCards fileData={fileData} />
-              </li>
-            ))}
-          </ul>
-        </div>
+        <Card className="w-full mt-6">
+          <CardContent>
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-lg font-semibold">Compressed Images</h3>
+              <div className="flex gap-2">
+                <Button
+                  onClick={() => downloadBatchAsZip(compressionResults)}
+                  disabled={!compressionResults.every((r) => r.compressedBlob)}
+                  className="flex items-center gap-2"
+                >
+                  <Download className="h-4 w-4" />
+                  Download All
+                </Button>
+                <Button
+                  onClick={clearResults}
+                  variant="outline"
+                >
+                  Clear All
+                </Button>
+              </div>
+            </div>
+            <div className="space-y-4">
+              {filesList.map((fileData) => (
+                <ImageCard key={fileData.id} fileData={fileData} />
+              ))}
+            </div>
+          </CardContent>
+        </Card>
       )}
     </div>
   );
