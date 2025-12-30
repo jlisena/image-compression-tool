@@ -1,8 +1,17 @@
 "use client";
 
 import React from "react";
-import { type CompressionResult } from "@/lib/imageCompressor";
 import { validateFile } from "@/lib/validationConfig";
+
+export interface CompressionResult {
+  id: string;
+  originalFile: File;
+  compressedBlob?: Blob;
+  originalSize: number;
+  compressedSize?: number;
+  compressionRatio?: number;
+  isCompressing?: boolean;
+}
 
 export function useCompressionUpload(quality: number = 75) {
   const [compressionResults, setCompressionResults] = React.useState<CompressionResult[]>([]);
