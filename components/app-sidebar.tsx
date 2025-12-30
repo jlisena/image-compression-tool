@@ -2,12 +2,12 @@
 
 import * as React from "react"
 import {
-  IconChartBar,
-  IconDashboard,
-  IconFolder,
-  IconListDetails,
-  IconUsers,
-} from "@tabler/icons-react"
+  BarChart3,
+  LayoutDashboard,
+  Folder,
+  ListTodo,
+  Users,
+} from "lucide-react"
 import InizioLogo from "@/components/logo-svg"
 import { NavMain } from "@/components/nav-main"
 import {
@@ -23,27 +23,27 @@ const data = {
     {
       title: "MailFlow",
       url: "https://www.google.com",
-      icon: IconDashboard,
+      icon: LayoutDashboard,
     },
     {
       title: "Confluence",
       url: "#",
-      icon: IconListDetails,
+      icon: ListTodo,
     },
     {
       title: "ElephantMail",
       url: "#",
-      icon: IconChartBar,
+      icon: BarChart3,
     },
     {
       title: "Github",
       url: "#",
-      icon: IconFolder,
+      icon: Folder,
     },
     {
       title: "Team",
       url: "#",
-      icon: IconUsers,
+      icon: Users,
     },
   ],
 }
