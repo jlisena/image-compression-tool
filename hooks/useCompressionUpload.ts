@@ -14,7 +14,9 @@ export interface CompressionResult {
 }
 
 export function useCompressionUpload(quality: number = 75) {
-  const [compressionResults, setCompressionResults] = React.useState<CompressionResult[]>([]);
+  const [compressionResults, setCompressionResults] = React.useState<
+    CompressionResult[]
+  >([]);
   const [errors, setErrors] = React.useState<string[]>([]);
 
   const handleDrop = async (acceptedFiles: File[]) => {
@@ -49,9 +51,12 @@ export function useCompressionUpload(quality: number = 75) {
 
     setCompressionResults((prev) => [...prev, ...pendingResults]);
 
-    try {
-      const results = await Promise.all(
-        validFiles.map(async (file) => {
+    // Process each file individually and update state as it completes
+    validFiles.forEach((file, index) => {
+      const pendingId = pendingResults[index].id;
+
+      (async () => {
+        try {
           const formData = new FormData();
           formData.append("image", file);
           formData.append("quality", quality.toString());
@@ -73,37 +78,36 @@ export function useCompressionUpload(quality: number = 75) {
             100
           ).toFixed(2);
 
-          return {
-            originalFile: file,
-            compressedBlob,
-            originalSize,
-            compressedSize,
-            compressionRatio: parseFloat(compressionRatio),
-            isCompressing: false,
-            id: pendingResults[validFiles.indexOf(file)].id,
-          } as CompressionResult;
-        })
-      );
-
-      // Replace pending results with completed results
-      setCompressionResults((prev) => {
-        const updated = [...prev];
-        const pendingStartIdx = updated.length - validFiles.length;
-        validFiles.forEach((file, i) => {
-          updated[pendingStartIdx + i] = results[i];
-        });
-        return updated;
-      });
-    } catch (error) {
-      console.error("Compression error:", error);
-      setErrors([
-        `Error: ${error instanceof Error ? error.message : "Unknown error"}`,
-      ]);
-      // Remove pending results on error
-      setCompressionResults((prev) =>
-        prev.slice(0, prev.length - validFiles.length)
-      );
-    }
+          // Update state for this specific file as soon as it completes
+          setCompressionResults((prev) =>
+            prev.map((result) =>
+              result.id === pendingId
+                ? {
+                    ...result,
+                    compressedBlob,
+                    originalSize,
+                    compressedSize,
+                    compressionRatio: parseFloat(compressionRatio),
+                    isCompressing: false,
+                  }
+                : result
+            )
+          );
+        } catch (error) {
+          console.error("Compression error for file:", file.name, error);
+          setErrors((prev) => [
+            ...prev,
+            `${file.name}: ${
+              error instanceof Error ? error.message : "Unknown error"
+            }`,
+          ]);
+          // Remove this specific pending result on error
+          setCompressionResults((prev) =>
+            prev.filter((result) => result.id !== pendingId)
+          );
+        }
+      })();
+    });
   };
 
   const clearResults = () => {
