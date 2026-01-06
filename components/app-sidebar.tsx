@@ -4,9 +4,8 @@ import * as React from "react"
 import {
   BarChart3,
   LayoutDashboard,
-  Folder,
+  House,
   ListTodo,
-  Users,
 } from "lucide-react"
 import InizioLogo from "@/components/logo-svg"
 import { NavMain } from "@/components/nav-main"
@@ -22,28 +21,23 @@ const data = {
   navMain: [
     {
       title: "MailFlow",
-      url: "https://www.google.com",
+      url: "https://melt.runmailflow.com/",
       icon: LayoutDashboard,
     },
     {
-      title: "Confluence",
-      url: "#",
-      icon: ListTodo,
-    },
-    {
       title: "ElephantMail",
-      url: "#",
+      url: "https://meltmail.prod.martech.totem.haus/",
       icon: BarChart3,
     },
     {
-      title: "Github",
-      url: "#",
-      icon: Folder,
+      title: "Confluence",
+      url: "https://evoke-melt.atlassian.net/wiki/spaces/EL/overview",
+      icon: ListTodo,
     },
     {
-      title: "Team",
-      url: "#",
-      icon: Users,
+      title: "Workfront",
+      url: "https://inizioevoke.my.workfront.com/boards/675cb1c14f5fa16456dfc409",
+      icon: House,
     },
   ],
 }
