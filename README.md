@@ -1,36 +1,58 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Image Compression Tool
 
-## Getting Started
+A web-based image compression utility that allows you to optimize images in multiple formats while maintaining quality control. Upload images, adjust compression settings, and download the optimized results.
 
-First, run the development server:
+## Features
+
+- Support for multiple image formats (JPEG, PNG, WebP, AVIF)
+- Adjustable quality slider for fine-tuned compression control
+- Batch processing with visual preview
+- Format-preserving compression
+- Lightweight and responsive design
+- Dark mode support
+
+## Tech Stack
+
+- **Framework:** Next.js 15 with App Router
+- **Frontend:** React 19, TypeScript
+- **Image Processing:** Sharp
+- **Styling:** Tailwind CSS 4, PostCSS
+- **UI Components:** Shadcn UI (Radix UI), Lucide Icons
+- **File Management:** JSZip for batch downloads
+- **Theme Management:** next-themes
+
+## Installation
+
+### Prerequisites
+
+- Node.js 18+ (with npm or preferred package manager)
+
+### Setup
+
+1. Clone the repository:
+
+```bash
+git clone <repository-url>
+cd inizio-img-compression
+```
+
+2. Install dependencies:
+
+```bash
+npm install
+```
+
+3. Run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+4. Open your browser and navigate to http://localhost:3000
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Usage
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Upload one or more images using the dropzone
+2. Use the quality slider to adjust compression level (50-90)
+3. Preview compressed images in the grid
+4. Download individual images or batch download as ZIP
