@@ -53,6 +53,6 @@ npm run dev
 ## Usage
 
 1. Upload one or more images using the dropzone
-2. Use the quality slider to adjust compression level (50-90)
+2. Use advanced settings if needed
 3. Preview compressed images in the grid
 4. Download individual images or batch download as ZIP
