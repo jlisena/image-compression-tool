@@ -6,7 +6,12 @@ A web-based image compression utility that allows you to optimize images in mult
 
 - Support for multiple image formats (JPEG, PNG, WebP, AVIF)
 - Adjustable quality slider for fine-tuned compression control
+- Trim transparency to remove transparent edges
+- Resize images while maintaining aspect ratio
+- Even dimensions padding for compatibility
 - Batch processing with visual preview
+- Compression statistics (ratio, file size reduction)
+- Batch download as ZIP
 - Format-preserving compression
 - Lightweight and responsive design
 - Dark mode support
