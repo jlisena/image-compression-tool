@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { validateFile } from "@/lib/validationConfig";
+import { validateFile } from "@/lib/fileUtils";
 
 export interface CompressionResult {
   id: string;
@@ -13,7 +13,15 @@ export interface CompressionResult {
   isCompressing?: boolean;
 }
 
-export function useCompressionUpload(quality: number = 75) {
+export function useCompressionUpload(
+  quality: number = 75,
+  trimTransparency: boolean = false,
+  resizeEnabled: boolean = false,
+  resizeWidth: number | null = null,
+  evenDimensions: boolean = false,
+  widthPaddingPosition: "left" | "right" = "left",
+  heightPaddingPosition: "top" | "bottom" = "bottom"
+) {
   const [compressionResults, setCompressionResults] = React.useState<
     CompressionResult[]
   >([]);
@@ -27,7 +35,7 @@ export function useCompressionUpload(quality: number = 75) {
     const validFiles: File[] = [];
 
     acceptedFiles.forEach((file) => {
-      const error = validateFile(file);
+      const error = validateFile(file, evenDimensions);
       if (error) {
         validationErrors.push(error);
       } else {
@@ -60,8 +68,15 @@ export function useCompressionUpload(quality: number = 75) {
           const formData = new FormData();
           formData.append("image", file);
           formData.append("quality", quality.toString());
+          formData.append("trimTransparency", trimTransparency.toString());
+          formData.append("resizeEnabled", resizeEnabled.toString());
+          if (resizeWidth)
+            formData.append("resizeWidth", resizeWidth.toString());
+          formData.append("evenDimensions", evenDimensions.toString());
+          formData.append("widthPaddingPosition", widthPaddingPosition);
+          formData.append("heightPaddingPosition", heightPaddingPosition);
 
-          const response = await fetch("/api/compress", {
+          const response = await fetch("/api/process-image", {
             method: "POST",
             body: formData,
           });
