@@ -25,18 +25,22 @@ export interface FileData {
 }
 
 export function CompressionCard() {
-  const [qualityEnabled, setQualityEnabled] = React.useState(false);
-  const [quality, setQuality] = React.useState(75);
-  const [trimTransparency, setTrimTransparency] = React.useState(false);
-  const [resizeEnabled, setResizeEnabled] = React.useState(false);
-  const [resizeWidth, setResizeWidth] = React.useState<number | null>(null);
-  const [evenDimensions, setEvenDimensions] = React.useState(false);
-  const [widthPaddingPosition, setWidthPaddingPosition] = React.useState<
-    "left" | "right"
-  >("left");
-  const [heightPaddingPosition, setHeightPaddingPosition] = React.useState<
-    "top" | "bottom"
-  >("bottom");
+  const [imageQualityEnabled, setImageQualityEnabled] = React.useState(false);
+  const [imageQuality, setImageQuality] = React.useState(75);
+  const [trimBorderEnabled, setTrimBorderEnabled] = React.useState(false);
+  const [trimBorderMode, setTrimBorderMode] = React.useState<
+    "transparency" | "white" | "both"
+  >("transparency");
+  const [resizeImageEnabled, setResizeImageEnabled] = React.useState(false);
+  const [resizeImageWidth, setResizeImageWidth] = React.useState<number | null>(
+    null
+  );
+  const [evenDimensionsEnabled, setEvenDimensionsEnabled] =
+    React.useState(false);
+  const [evenDimensionsPaddingWidth, setEvenDimensionsPaddingWidth] =
+    React.useState<"left" | "right">("left");
+  const [evenDimensionsPaddingHeight, setEvenDimensionsPaddingHeight] =
+    React.useState<"top" | "bottom">("bottom");
   const {
     compressionResults,
     errors,
@@ -44,13 +48,14 @@ export function CompressionCard() {
     isCompressing,
     clearResults,
   } = useCompressionUpload(
-    qualityEnabled ? quality : 75,
-    trimTransparency,
-    resizeEnabled,
-    resizeWidth,
-    evenDimensions,
-    widthPaddingPosition,
-    heightPaddingPosition
+    imageQualityEnabled ? imageQuality : 75,
+    trimBorderEnabled,
+    trimBorderMode,
+    resizeImageEnabled,
+    resizeImageWidth,
+    evenDimensionsEnabled,
+    evenDimensionsPaddingWidth,
+    evenDimensionsPaddingHeight
   );
 
   const filesList: FileData[] = compressionResults.map((result) => ({
@@ -143,22 +148,24 @@ export function CompressionCard() {
 
           {/* Advanced Settings Accordion */}
           <AdvancedSettings
-            qualityEnabled={qualityEnabled}
-            onQualityEnabledChange={setQualityEnabled}
-            quality={quality}
-            onQualityChange={setQuality}
-            trimTransparency={trimTransparency}
-            onTrimTransparencyChange={setTrimTransparency}
-            resizeEnabled={resizeEnabled}
-            onResizeEnabledChange={setResizeEnabled}
-            resizeWidth={resizeWidth}
-            onResizeWidthChange={setResizeWidth}
-            evenDimensions={evenDimensions}
-            onEvenDimensionsChange={setEvenDimensions}
-            widthPaddingPosition={widthPaddingPosition}
-            onWidthPaddingPositionChange={setWidthPaddingPosition}
-            heightPaddingPosition={heightPaddingPosition}
-            onHeightPaddingPositionChange={setHeightPaddingPosition}
+            imageQualityEnabled={imageQualityEnabled}
+            onImageQualityEnabledChange={setImageQualityEnabled}
+            imageQuality={imageQuality}
+            onImageQualityChange={setImageQuality}
+            trimBorderEnabled={trimBorderEnabled}
+            onTrimBorderEnabledChange={setTrimBorderEnabled}
+            trimBorderMode={trimBorderMode}
+            onTrimBorderModeChange={setTrimBorderMode}
+            resizeImageEnabled={resizeImageEnabled}
+            onResizeImageEnabledChange={setResizeImageEnabled}
+            resizeImageWidth={resizeImageWidth}
+            onResizeImageWidthChange={setResizeImageWidth}
+            evenDimensionsEnabled={evenDimensionsEnabled}
+            onEvenDimensionsEnabledChange={setEvenDimensionsEnabled}
+            evenDimensionsPaddingWidth={evenDimensionsPaddingWidth}
+            onEvenDimensionsPaddingWidthChange={setEvenDimensionsPaddingWidth}
+            evenDimensionsPaddingHeight={evenDimensionsPaddingHeight}
+            onEvenDimensionsPaddingHeightChange={setEvenDimensionsPaddingHeight}
           />
         </CardContent>
       </Card>
