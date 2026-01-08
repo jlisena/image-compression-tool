@@ -18,7 +18,7 @@ export function SiteHeader() {
             variant="ghost"
             asChild
             size="sm"
-            className="hidden px-3 sm:flex"
+            className="px-3"
           >
             <a
               href="https://github.com/jlisena/inizio-img-compression"
