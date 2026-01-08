@@ -11,39 +11,50 @@ import {
 } from "@/components/ui/select";
 
 interface DimensionPaddingProps {
-  enabled: boolean;
-  onEnabledChange: (enabled: boolean) => void;
-  widthPaddingPosition: "left" | "right";
-  onWidthPaddingPositionChange: (position: "left" | "right") => void;
-  heightPaddingPosition: "top" | "bottom";
-  onHeightPaddingPositionChange: (position: "top" | "bottom") => void;
+  evenDimensionsEnabled: boolean;
+  onEvenDimensionsEnabledChange: (enabled: boolean) => void;
+  evenDimensionsPaddingWidth: "left" | "right";
+  onEvenDimensionsPaddingWidthChange: (position: "left" | "right") => void;
+  evenDimensionsPaddingHeight: "top" | "bottom";
+  onEvenDimensionsPaddingHeightChange: (position: "top" | "bottom") => void;
 }
 
 export function DimensionPadding({
-  enabled,
-  onEnabledChange,
-  widthPaddingPosition,
-  onWidthPaddingPositionChange,
-  heightPaddingPosition,
-  onHeightPaddingPositionChange,
+  evenDimensionsEnabled,
+  onEvenDimensionsEnabledChange,
+  evenDimensionsPaddingWidth,
+  onEvenDimensionsPaddingWidthChange,
+  evenDimensionsPaddingHeight,
+  onEvenDimensionsPaddingHeightChange,
 }: DimensionPaddingProps) {
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 pl-4">
       <div className="flex items-center gap-3">
-        <Switch checked={enabled} onCheckedChange={onEnabledChange} />
-        <label className="text-sm font-medium">Even Dimensions (no JPEG)</label>
+        <Switch
+          checked={evenDimensionsEnabled}
+          onCheckedChange={onEvenDimensionsEnabledChange}
+        />
+        <label
+          className={
+            evenDimensionsEnabled ? "text-sm font-bold" : "text-sm font-medium"
+          }
+        >
+          Even File Dimensions (no JPEG)
+        </label>
       </div>
-      {enabled && (
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Width Padding</label>
+      {evenDimensionsEnabled && (
+        <div className="space-y-3 mt-3 pl-11 p-3 bg-muted/60 rounded-md">
+          <div className="flex items-center gap-3">
+            <label className="text-sm font-medium whitespace-nowrap w-11">
+              Width:
+            </label>
             <Select
-              value={widthPaddingPosition}
+              value={evenDimensionsPaddingWidth}
               onValueChange={(value) =>
-                onWidthPaddingPositionChange(value as "left" | "right")
+                onEvenDimensionsPaddingWidthChange(value as "left" | "right")
               }
             >
-              <SelectTrigger>
+              <SelectTrigger className="w-24">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -52,15 +63,17 @@ export function DimensionPadding({
               </SelectContent>
             </Select>
           </div>
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Height Padding</label>
+          <div className="flex items-center gap-3">
+            <label className="text-sm font-medium whitespace-nowrap w-11">
+              Height:
+            </label>
             <Select
-              value={heightPaddingPosition}
+              value={evenDimensionsPaddingHeight}
               onValueChange={(value) =>
-                onHeightPaddingPositionChange(value as "top" | "bottom")
+                onEvenDimensionsPaddingHeightChange(value as "top" | "bottom")
               }
             >
-              <SelectTrigger>
+              <SelectTrigger className="w-24">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
