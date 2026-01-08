@@ -16,7 +16,7 @@ export function getFileExtension(filename: string): string {
 
 /**
  * Format bytes to human-readable file size
- * @example formatFileSize(1048576) -> "1.00 MB"
+ * @example formatFileSize(1048576) -> "1.0 MB"
  */
 export function formatFileSize(bytes: number): string {
   if (bytes === 0) return "0 B";
@@ -30,7 +30,9 @@ export function formatFileSize(bytes: number): string {
     unitIndex++;
   }
 
-  return `${size.toFixed(2)} ${units[unitIndex]}`;
+  // B and KB: 0 decimals, MB and GB: 2 decimals
+  const decimals = unitIndex <= 1 ? 0 : 2;
+  return `${size.toFixed(decimals)} ${units[unitIndex]}`;
 }
 
 export const MAX_FILE_SIZE = 2.5 * 1024 * 1024; // 2.5MB
