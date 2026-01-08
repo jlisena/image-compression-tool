@@ -14,13 +14,14 @@ export interface CompressionResult {
 }
 
 export function useCompressionUpload(
-  quality: number = 75,
-  trimTransparency: boolean = false,
-  resizeEnabled: boolean = false,
-  resizeWidth: number | null = null,
-  evenDimensions: boolean = false,
-  widthPaddingPosition: "left" | "right" = "left",
-  heightPaddingPosition: "top" | "bottom" = "bottom"
+  imageQuality: number = 75,
+  trimBorderEnabled: boolean = false,
+  trimBorderMode: "transparency" | "white" | "both" = "transparency",
+  resizeImageEnabled: boolean = false,
+  resizeImageWidth: number | null = null,
+  evenDimensionsEnabled: boolean = false,
+  evenDimensionsPaddingWidth: "left" | "right" = "left",
+  evenDimensionsPaddingHeight: "top" | "bottom" = "bottom"
 ) {
   const [compressionResults, setCompressionResults] = React.useState<
     CompressionResult[]
@@ -35,7 +36,7 @@ export function useCompressionUpload(
     const validFiles: File[] = [];
 
     acceptedFiles.forEach((file) => {
-      const error = validateFile(file, evenDimensions);
+      const error = validateFile(file, evenDimensionsEnabled);
       if (error) {
         validationErrors.push(error);
       } else {
@@ -67,14 +68,26 @@ export function useCompressionUpload(
         try {
           const formData = new FormData();
           formData.append("image", file);
-          formData.append("quality", quality.toString());
-          formData.append("trimTransparency", trimTransparency.toString());
-          formData.append("resizeEnabled", resizeEnabled.toString());
-          if (resizeWidth)
-            formData.append("resizeWidth", resizeWidth.toString());
-          formData.append("evenDimensions", evenDimensions.toString());
-          formData.append("widthPaddingPosition", widthPaddingPosition);
-          formData.append("heightPaddingPosition", heightPaddingPosition);
+          formData.append("imageQuality", imageQuality.toString());
+          formData.append("trimBorderEnabled", trimBorderEnabled.toString());
+          if (trimBorderEnabled) {
+            formData.append("trimBorderMode", trimBorderMode);
+          }
+          formData.append("resizeImageEnabled", resizeImageEnabled.toString());
+          if (resizeImageWidth)
+            formData.append("resizeImageWidth", resizeImageWidth.toString());
+          formData.append(
+            "evenDimensionsEnabled",
+            evenDimensionsEnabled.toString()
+          );
+          formData.append(
+            "evenDimensionsPaddingWidth",
+            evenDimensionsPaddingWidth
+          );
+          formData.append(
+            "evenDimensionsPaddingHeight",
+            evenDimensionsPaddingHeight
+          );
 
           const response = await fetch("/api/process-image", {
             method: "POST",
