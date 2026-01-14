@@ -12,13 +12,10 @@ A web-based image compression utility that allows you to optimize images in mult
 - Batch processing with visual preview
 - Compression statistics (ratio, file size reduction)
 - Batch download as ZIP
-- Format-preserving compression
-- Lightweight and responsive design
-- Dark mode support
 
 ## Tech Stack
 
-- **Framework:** Next.js 15 with App Router
+- **Framework:** Next.js 15 with App Router and Turbopack
 - **Frontend:** React 19, TypeScript
 - **Image Processing:** Sharp
 - **Styling:** Tailwind CSS 4, PostCSS
@@ -30,30 +27,37 @@ A web-based image compression utility that allows you to optimize images in mult
 
 ### Prerequisites
 
-- Node.js 18+ (with npm or preferred package manager)
+- **Node.js:** 22.14.0 (recommended) or 18+
+- npm or preferred package manager
 
 ### Setup
 
-1. Clone the repository:
-
 ```bash
-git clone <repository-url>
+git clone git@github.com:jlisena/inizio-img-compression.git
 cd inizio-img-compression
 ```
 
-2. Install dependencies:
+2. Use the correct Node version (run `nvm install <version>` if not installed):
+
+```bash
+nvm use 22.14.0
+# or if you prefer Node 18
+nvm use 18
+```
+
+3. Install dependencies:
 
 ```bash
 npm install
 ```
 
-3. Run the development server:
+4. Run the development server:
 
 ```bash
 npm run dev
 ```
 
-4. Open your browser and navigate to http://localhost:3000
+5. Open your browser and navigate to http://localhost:3000
 
 ## Usage
 
