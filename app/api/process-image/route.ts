@@ -22,6 +22,7 @@ const processImage = async (
     do {
       const before = await pipeline.metadata();
       const beforeWidth = before.width || 0;
+      const beforeHeight = before.height || 0;
 
       if (trimBorderMode === "transparency" || trimBorderMode === "both") {
         pipeline = pipeline.trim();
@@ -32,7 +33,10 @@ const processImage = async (
 
       const after = await pipeline.metadata();
       const afterWidth = after.width || 0;
-      trimmed = beforeWidth !== afterWidth && trimBorderMode === "both";
+      const afterHeight = after.height || 0;
+      // For "both" mode, continue looping until dimensions stop changing
+      // This allows transparency trim to expose white borders and vice versa
+      trimmed = (beforeWidth !== afterWidth || beforeHeight !== afterHeight) && trimBorderMode === "both";
     } while (trimmed);
   }
 
