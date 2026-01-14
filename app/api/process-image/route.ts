@@ -18,26 +18,19 @@ const processImage = async (
 
   // Base transformations
   if (trimBorderEnabled) {
-    let trimmed = false;
-    do {
-      const before = await pipeline.metadata();
-      const beforeWidth = before.width || 0;
-      const beforeHeight = before.height || 0;
-
-      if (trimBorderMode === "transparency" || trimBorderMode === "both") {
-        pipeline = pipeline.trim();
-      }
-      if (trimBorderMode === "white" || trimBorderMode === "both") {
+    if (trimBorderMode === "transparency" || trimBorderMode === "both") {
+      pipeline = pipeline.trim();
+    }
+    if (trimBorderMode === "white" || trimBorderMode === "both") {
+      // For "both" mode, we need to materialize after transparency trim
+      // so the white trim operates on the result
+      if (trimBorderMode === "both") {
+        const buffer = await pipeline.toBuffer();
+        pipeline = sharp(buffer).trim({ background: "#ffffff" });
+      } else {
         pipeline = pipeline.trim({ background: "#ffffff" });
       }
-
-      const after = await pipeline.metadata();
-      const afterWidth = after.width || 0;
-      const afterHeight = after.height || 0;
-      // For "both" mode, continue looping until dimensions stop changing
-      // This allows transparency trim to expose white borders and vice versa
-      trimmed = (beforeWidth !== afterWidth || beforeHeight !== afterHeight) && trimBorderMode === "both";
-    } while (trimmed);
+    }
   }
 
   if (resizeImageEnabled && resizeImageWidth) {
