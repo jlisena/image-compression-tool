@@ -1,0 +1,46 @@
+name: Build and attach macOS Electron Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build-and-upload:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Next.js
+        run: npm run build
+
+      - name: Build Electron (mac)
+        run: npx electron-builder --mac --publish never
+
+      - name: Upload DMG to Release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: dist/*.dmg
+          asset_name: ${{ github.event.release.tag_name }}-mac.dmg
+          asset_content_type: application/octet-stream
+
+      - name: Upload ZIP to Release
+        if: ${{ always() }}
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: dist/*.zip
+          asset_name: ${{ github.event.release.tag_name }}-mac.zip
+          asset_content_type: application/zip
