@@ -27,22 +27,22 @@ A web-based image compression utility that allows you to optimize images in mult
 
 ### Prerequisites
 
-- **Node.js:** 22.14.0 (recommended) or 18+
-- npm or preferred package manager
+- **Node.js:** 22+ (recommended)
+- **npm** or preferred package manager
 
 ### Setup
+
+1. Clone the repository and change directory:
 
 ```bash
 git clone git@github.com:jlisena/inizio-img-compression.git
 cd inizio-img-compression
 ```
 
-2. Use the correct Node version (run `nvm install <version>` if not installed):
+2. Use the correct Node version:
 
 ```bash
-nvm use 22.14.0
-# or if you prefer Node 18
-nvm use 18
+nvm use (run `nvm install lts/jod` if not installed)
 ```
 
 3. Install dependencies:
