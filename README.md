@@ -40,9 +40,9 @@ cd inizio-img-compression
 ```
 
 2. Use the correct Node version:
-
+> Note: run `nvm install lts/jod` if not installed
 ```bash
-nvm use (run `nvm install lts/jod` if not installed)
+nvm use
 ```
 
 3. Install dependencies:
