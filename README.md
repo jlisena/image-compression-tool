@@ -29,14 +29,15 @@ A web-based image compression utility that allows you to optimize images in mult
 
 - **Node.js:** 22+ (recommended)
 - **npm** or preferred package manager
+- **nvm**
 
 ### Setup
 
 1. Clone the repository and change directory:
 
 ```bash
-git clone git@github.com:jlisena/inizio-img-compression.git
-cd inizio-img-compression
+git clone git@github.com:jlisena/image-compression-tool.git
+cd image-compression-tool
 ```
 
 2. Use the correct Node version:
