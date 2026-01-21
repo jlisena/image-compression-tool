@@ -35,7 +35,7 @@ export function formatFileSize(bytes: number): string {
   return `${size.toFixed(decimals)} ${units[unitIndex]}`;
 }
 
-export const MAX_FILE_SIZE = 2.5 * 1024 * 1024; // 2.5MB
+export const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 export const ALLOWED_TYPES = [
   "image/jpeg",
   "image/png",
@@ -57,7 +57,7 @@ export function validateFile(
     return `${file.name}: Invalid file type. Only JPEG, PNG, WebP, and AVIF are allowed.`;
   }
   if (file.size > MAX_FILE_SIZE) {
-    return `${file.name}: File size exceeds 2.5MB limit.`;
+    return `${file.name}: File size exceeds 5MB limit.`;
   }
   if (evenDimensions && file.type === "image/jpeg") {
     return `${file.name}: Even dimensions padding is only available for PNG, WebP, and AVIF formats.`;
