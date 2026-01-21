@@ -9,10 +9,10 @@ import type { FileData } from "@/components/compression/compression-card";
 interface DropzoneProps {
   onDrop: (files: File[]) => void;
   isCompressing: boolean;
-  filesList: FileData[];
+  compressionFilesList: FileData[];
 }
 
-export function Dropzone({ onDrop, isCompressing, filesList }: DropzoneProps) {
+export function Dropzone({ onDrop, isCompressing, compressionFilesList }: DropzoneProps) {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     noClick: true,
@@ -27,16 +27,16 @@ export function Dropzone({ onDrop, isCompressing, filesList }: DropzoneProps) {
         isDragActive
           ? "border-primary bg-primary/5"
           : "border-muted-foreground/25",
-        filesList.length === 0 && "flex items-center justify-center"
+        compressionFilesList.length === 0 && "flex items-center justify-center"
       )}
     >
       <input {...getInputProps()} id="file-input" />
 
-      {filesList.length === 0 ? (
+      {compressionFilesList.length === 0 ? (
         <p className="text-lg font-medium text-primary/60">Drop images here</p>
       ) : (
         <div className="p-3 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-          {filesList.map((fileData) => (
+          {compressionFilesList.map((fileData) => (
             <ImageCard key={fileData.fileId} fileData={fileData} />
           ))}
         </div>

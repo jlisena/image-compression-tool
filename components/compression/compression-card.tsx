@@ -58,7 +58,7 @@ export function CompressionCard() {
     evenDimensionsPaddingHeight
   );
 
-  const filesList: FileData[] = compressionFileResults.map((result) => ({
+  const compressionFilesList: FileData[] = compressionFileResults.map((result) => ({
     fileId: result.fileId,
     originalFile: result.originalFile,
     originalFileName: getFileNameWithoutExt(result.originalFile.name),
@@ -99,7 +99,7 @@ export function CompressionCard() {
             <Button
               variant="destructive"
               onClick={clearCompressionResults}
-              disabled={filesList.length === 0}
+              disabled={compressionFilesList.length === 0}
               className="leading-none"
             >
               <X className="h-4 w-4" />
@@ -111,7 +111,7 @@ export function CompressionCard() {
           <Dropzone
             onDrop={handleFilesDrop}
             isCompressing={isCompressing}
-            filesList={filesList}
+            compressionFilesList={compressionFilesList}
           />
 
           {/* Download All button */}
