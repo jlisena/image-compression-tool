@@ -13,14 +13,14 @@ import { getFileNameWithoutExt } from "@/lib/fileUtils";
 import { downloadBatchAsZip } from "@/lib/downloadUtils";
 
 export interface FileData {
-  id: string;
-  file: File;
-  fileName: string;
-  fileType: string;
-  fileSize: string;
-  newFilePercent?: string;
-  newFileSize?: string;
-  compressedBlob?: Blob;
+  fileId: string;
+  originalFile: File;
+  originalFileName: string;
+  originalFileType: string;
+  originalFileSize: string;
+  compressedPercent?: string;
+  compressedFileSize?: string;
+  compressedFileBlob?: Blob;
   isCompressing?: boolean;
 }
 
@@ -59,18 +59,18 @@ export function CompressionCard() {
   );
 
   const filesList: FileData[] = compressionResults.map((result) => ({
-    id: result.id,
-    file: result.originalFile,
-    fileName: getFileNameWithoutExt(result.originalFile.name),
-    fileType: result.originalFile.type.toUpperCase().split("/")[1],
-    fileSize: formatFileSize(result.originalSize),
-    newFilePercent: result.compressionRatio
+    fileId: result.id,
+    originalFile: result.originalFile,
+    originalFileName: getFileNameWithoutExt(result.originalFile.name),
+    originalFileType: result.originalFile.type.toUpperCase().split("/")[1],
+    originalFileSize: formatFileSize(result.originalSize),
+    compressedPercent: result.compressionRatio
       ? `${result.compressionRatio.toFixed(0)}%`
       : "--",
-    newFileSize: result.compressedSize
+    compressedFileSize: result.compressedSize
       ? formatFileSize(result.compressedSize)
       : "--",
-    compressedBlob: result.compressedBlob,
+    compressedFileBlob: result.compressedBlob,
     isCompressing: result.isCompressing,
   }));
 

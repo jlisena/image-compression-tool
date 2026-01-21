@@ -37,7 +37,7 @@ export function Dropzone({ onDrop, isCompressing, filesList }: DropzoneProps) {
       ) : (
         <div className="p-3 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
           {filesList.map((fileData) => (
-            <ImageCard key={fileData.id} fileData={fileData} />
+            <ImageCard key={fileData.fileId} fileData={fileData} />
           ))}
         </div>
       )}

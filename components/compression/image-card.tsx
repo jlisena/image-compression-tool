@@ -19,28 +19,28 @@ interface ImageCardProps {
 }
 
 export function ImageCard({ fileData }: ImageCardProps) {
-  const objectUrl = usePreviewUrl(fileData.file);
-  const ext = getFileExtension(fileData.file.name);
-  const fullName = ext ? `${fileData.fileName}.${ext}` : fileData.fileName;
+  const objectUrl = usePreviewUrl(fileData.originalFile);
+  const ext = getFileExtension(fileData.originalFile.name);
+  const fullName = ext ? `${fileData.originalFileName}.${ext}` : fileData.originalFileName;
 
   const handleDownload = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (fileData.compressedBlob) {
-      downloadCompressedImage(fileData.compressedBlob, fileData.file.name);
+    if (fileData.compressedFileBlob) {
+      downloadCompressedImage(fileData.compressedFileBlob, fileData.originalFile.name);
     }
   };
 
   // Determine color and sign for compression ratio
   const getPercentageDisplay = () => {
-    if (!fileData.newFilePercent)
+    if (!fileData.compressedPercent)
       return { text: "--", color: "text-muted-foreground" };
 
-    const percent = parseFloat(fileData.newFilePercent);
+    const percent = parseFloat(fileData.compressedPercent);
 
     if (percent > 0) {
       // Positive = compression success (file got smaller)
       return {
-        text: `-${fileData.newFilePercent}`,
+        text: `-${fileData.compressedPercent}`,
         color: "text-green-600 dark:text-green-400",
       };
     } else if (percent < 0) {
@@ -66,7 +66,7 @@ export function ImageCard({ fileData }: ImageCardProps) {
             {objectUrl ? (
               <AvatarImage
                 src={objectUrl}
-                alt={fileData.fileName}
+                alt={fileData.originalFileName}
                 className="object-cover w-full h-full"
               />
             ) : null}
@@ -81,7 +81,7 @@ export function ImageCard({ fileData }: ImageCardProps) {
           )}
 
           {/* Download button - always visible, centered on avatar */}
-          {fileData.compressedBlob && !fileData.isCompressing && (
+          {fileData.compressedFileBlob && !fileData.isCompressing && (
             <Button
               size="icon"
               onClick={handleDownload}
@@ -115,12 +115,12 @@ export function ImageCard({ fileData }: ImageCardProps) {
           <p className="text-[10px] text-muted-foreground text-center">
             Compressing...
           </p>
-        ) : fileData.compressedBlob ? (
+        ) : fileData.compressedFileBlob ? (
           <p className="text-[10px] text-center">
-            <span className="text-muted-foreground">{fileData.fileSize}</span>
+            <span className="text-muted-foreground">{fileData.originalFileSize}</span>
             <span className="text-muted-foreground mx-1">→</span>
             <span className="text-muted-foreground">
-              {fileData.newFileSize}
+              {fileData.compressedFileSize}
             </span>
             <span className={`font-semibold ml-1 ${percentageDisplay.color}`}>
               ({percentageDisplay.text})
@@ -128,7 +128,7 @@ export function ImageCard({ fileData }: ImageCardProps) {
           </p>
         ) : (
           <p className="text-[10px] text-muted-foreground text-center">
-            {fileData.fileSize}
+            {fileData.originalFileSize}
           </p>
         )}
       </div>
