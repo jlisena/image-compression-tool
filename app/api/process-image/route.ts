@@ -39,6 +39,9 @@ const processImage = async (
       withoutEnlargement: false,
       fit: "inside",
     });
+    // Materialize the resize so even dimensions check gets the correct dimensions
+    const resizedBuffer = await pipeline.toBuffer({ resolveWithObject: false }) as Buffer;
+    pipeline = sharp(resizedBuffer);
   }
 
   // Apply format-specific compression
