@@ -50,11 +50,11 @@ export async function downloadBatchAsZip(
   const usedNames = new Set<string>();
 
   results.forEach((result) => {
-    if (result.compressedBlob) {
+    if (result.compressedFileBlob) {
       const originalName = result.originalFile.name;
       const uniqueName = getUniqueFileName(originalName, usedNames);
       usedNames.add(uniqueName);
-      zip.file(uniqueName, result.compressedBlob);
+      zip.file(uniqueName, result.compressedFileBlob);
     }
   });
 

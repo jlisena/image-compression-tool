@@ -42,11 +42,11 @@ export function CompressionCard() {
   const [evenDimensionsPaddingHeight, setEvenDimensionsPaddingHeight] =
     React.useState<"top" | "bottom">("bottom");
   const {
-    compressionResults,
-    errors,
-    handleDrop,
+    compressionFileResults,
+    compressionErrors,
+    handleFilesDrop,
     isCompressing,
-    clearResults,
+    clearCompressionResults,
   } = useCompressionUpload(
     imageQualityEnabled ? imageQuality : 75,
     trimBorderEnabled,
@@ -58,28 +58,28 @@ export function CompressionCard() {
     evenDimensionsPaddingHeight
   );
 
-  const filesList: FileData[] = compressionResults.map((result) => ({
-    fileId: result.id,
+  const filesList: FileData[] = compressionFileResults.map((result) => ({
+    fileId: result.fileId,
     originalFile: result.originalFile,
     originalFileName: getFileNameWithoutExt(result.originalFile.name),
     originalFileType: result.originalFile.type.toUpperCase().split("/")[1],
-    originalFileSize: formatFileSize(result.originalSize),
-    compressedPercent: result.compressionRatio
-      ? `${result.compressionRatio.toFixed(0)}%`
+    originalFileSize: formatFileSize(result.originalFileSize),
+    compressedPercent: result.compressedRatio
+      ? `${result.compressedRatio.toFixed(0)}%`
       : "--",
-    compressedFileSize: result.compressedSize
-      ? formatFileSize(result.compressedSize)
+    compressedFileSize: result.compressedFileSize
+      ? formatFileSize(result.compressedFileSize)
       : "--",
-    compressedFileBlob: result.compressedBlob,
+    compressedFileBlob: result.compressedFileBlob,
     isCompressing: result.isCompressing,
   }));
 
-  const completedCount = compressionResults.filter(
-    (r) => r.compressedBlob
+  const completedCount = compressionFileResults.filter(
+    (r) => r.compressedFileBlob
   ).length;
   const allComplete =
-    completedCount === compressionResults.length &&
-    compressionResults.length > 0;
+    completedCount === compressionFileResults.length &&
+    compressionFileResults.length > 0;
 
   return (
     <div className="px-4 sm:px-6 lg:px-8">
@@ -98,7 +98,7 @@ export function CompressionCard() {
             </Button>
             <Button
               variant="destructive"
-              onClick={clearResults}
+              onClick={clearCompressionResults}
               disabled={filesList.length === 0}
               className="leading-none"
             >
@@ -109,7 +109,7 @@ export function CompressionCard() {
 
           {/* Dropzone component */}
           <Dropzone
-            onDrop={handleDrop}
+            onDrop={handleFilesDrop}
             isCompressing={isCompressing}
             filesList={filesList}
           />
@@ -117,13 +117,13 @@ export function CompressionCard() {
           {/* Download All button */}
           <div className="flex justify-center my-6">
             <Button
-              onClick={() => downloadBatchAsZip(compressionResults)}
+              onClick={() => downloadBatchAsZip(compressionFileResults)}
               disabled={!allComplete}
               className="relative leading-none"
             >
               <Download className="h-4 w-4" />
               <span className="leading-none">Download All</span>
-              {compressionResults.length > 0 && (
+              {compressionFileResults.length > 0 && (
                 <span className="absolute -top-2 -right-2 bg-background text-foreground text-xs font-semibold rounded-full h-5 w-5 flex items-center justify-center border-2 border-primary">
                   {completedCount}
                 </span>
@@ -132,13 +132,13 @@ export function CompressionCard() {
           </div>
 
           {/* Error alert */}
-          {errors.length > 0 && (
+          {compressionErrors.length > 0 && (
             <Alert variant="destructive" className="mt-4">
               <AlertCircle className="h-4 w-4" />
               <AlertTitle>Error</AlertTitle>
               <AlertDescription>
                 <ul className="space-y-1">
-                  {errors.map((error, idx) => (
+                  {compressionErrors.map((error, idx) => (
                     <li key={idx}>• {error}</li>
                   ))}
                 </ul>

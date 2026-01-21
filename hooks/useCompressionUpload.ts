@@ -4,12 +4,12 @@ import React from "react";
 import { validateFile } from "@/lib/fileUtils";
 
 export interface CompressionResult {
-  id: string;
+  fileId: string;
   originalFile: File;
-  compressedBlob?: Blob;
-  originalSize: number;
-  compressedSize?: number;
-  compressionRatio?: number;
+  compressedFileBlob?: Blob;
+  originalFileSize: number;
+  compressedFileSize?: number;
+  compressedRatio?: number;
   isCompressing?: boolean;
 }
 
@@ -23,13 +23,13 @@ export function useCompressionUpload(
   evenDimensionsPaddingWidth: "left" | "right" = "left",
   evenDimensionsPaddingHeight: "top" | "bottom" = "bottom"
 ) {
-  const [compressionResults, setCompressionResults] = React.useState<
+  const [compressionFileResults, setCompressionFileResults] = React.useState<
     CompressionResult[]
   >([]);
-  const [errors, setErrors] = React.useState<string[]>([]);
+  const [compressionErrors, setCompressionErrors] = React.useState<string[]>([]);
 
-  const handleDrop = async (acceptedFiles: File[]) => {
-    setErrors([]);
+  const handleFilesDrop = async (acceptedFiles: File[]) => {
+    setCompressionErrors([]);
 
     // Validate files
     const validationErrors: string[] = [];
@@ -45,24 +45,24 @@ export function useCompressionUpload(
     });
 
     if (validationErrors.length > 0) {
-      setErrors(validationErrors);
+      setCompressionErrors(validationErrors);
     }
 
     if (validFiles.length === 0) return;
 
     // Add pending results with isCompressing flag
     const pendingResults: CompressionResult[] = validFiles.map((file) => ({
-      id: `${Date.now()}-${Math.random()}`,
+      fileId: `${Date.now()}-${Math.random()}`,
       originalFile: file,
-      originalSize: file.size,
+      originalFileSize: file.size,
       isCompressing: true,
     }));
 
-    setCompressionResults((prev) => [...prev, ...pendingResults]);
+    setCompressionFileResults((prev) => [...prev, ...pendingResults]);
 
     // Process each file individually and update state as it completes
     validFiles.forEach((file, index) => {
-      const pendingId = pendingResults[index].id;
+      const pendingId = pendingResults[index].fileId;
 
       (async () => {
         try {
@@ -98,24 +98,24 @@ export function useCompressionUpload(
             throw new Error(`Compression failed: ${response.statusText}`);
           }
 
-          const compressedBlob = await response.blob();
-          const compressedSize = compressedBlob.size;
-          const originalSize = file.size;
-          const compressionRatio = (
-            (1 - compressedSize / originalSize) *
+          const compressedFileBlob = await response.blob();
+          const compressedFileSize = compressedFileBlob.size;
+          const originalFileSize = file.size;
+          const compressedRatio = (
+            (1 - compressedFileSize / originalFileSize) *
             100
           ).toFixed(2);
 
           // Update state for this specific file as soon as it completes
-          setCompressionResults((prev) =>
+          setCompressionFileResults((prev) =>
             prev.map((result) =>
-              result.id === pendingId
+              result.fileId === pendingId
                 ? {
                     ...result,
-                    compressedBlob,
-                    originalSize,
-                    compressedSize,
-                    compressionRatio: parseFloat(compressionRatio),
+                    compressedFileBlob,
+                    originalFileSize,
+                    compressedFileSize,
+                    compressedRatio: parseFloat(compressedRatio),
                     isCompressing: false,
                   }
                 : result
@@ -123,31 +123,31 @@ export function useCompressionUpload(
           );
         } catch (error) {
           console.error("Compression error for file:", file.name, error);
-          setErrors((prev) => [
+          setCompressionErrors((prev) => [
             ...prev,
             `${file.name}: ${
               error instanceof Error ? error.message : "Unknown error"
             }`,
           ]);
           // Remove this specific pending result on error
-          setCompressionResults((prev) =>
-            prev.filter((result) => result.id !== pendingId)
+          setCompressionFileResults((prev) =>
+            prev.filter((result) => result.fileId !== pendingId)
           );
         }
       })();
     });
   };
 
-  const clearResults = () => {
-    setCompressionResults([]);
-    setErrors([]);
+  const clearCompressionResults = () => {
+    setCompressionFileResults([]);
+    setCompressionErrors([]);
   };
 
   return {
-    compressionResults,
-    errors,
-    handleDrop,
-    clearResults,
-    isCompressing: compressionResults.some((r) => r.isCompressing),
+    compressionFileResults,
+    compressionErrors,
+    handleFilesDrop,
+    clearCompressionResults,
+    isCompressing: compressionFileResults.some((r) => r.isCompressing),
   };
 }
