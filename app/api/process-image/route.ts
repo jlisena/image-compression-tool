@@ -2,8 +2,8 @@ import { NextResponse } from "next/server";
 import sharp from "sharp";
 
 const processImage = async (
-  buffer: Buffer,
-  fileType: string,
+  originalImageBuffer: Buffer,
+  originalFileType: string,
   imageQuality: number,
   trimBorderEnabled: boolean,
   trimBorderMode: "transparency" | "white" | "both",
@@ -13,8 +13,8 @@ const processImage = async (
   evenDimensionsPaddingWidth: "left" | "right",
   evenDimensionsPaddingHeight: "top" | "bottom"
 ) => {
-  let pipeline = sharp(buffer).rotate();
-  let outputMimeType = fileType;
+  let pipeline = sharp(originalImageBuffer).rotate();
+  let processedImageMimeType = originalFileType;
 
   // Base transformations
   if (trimBorderEnabled) {
@@ -42,24 +42,24 @@ const processImage = async (
   }
 
   // Apply format-specific compression
-  if (fileType === "image/png") {
+  if (originalFileType === "image/png") {
     pipeline = pipeline.png({ compressionLevel: 9, quality: imageQuality });
-  } else if (fileType === "image/webp") {
+  } else if (originalFileType === "image/webp") {
     pipeline = pipeline.webp({ quality: imageQuality });
-  } else if (fileType === "image/avif") {
+  } else if (originalFileType === "image/avif") {
     pipeline = pipeline.avif({ quality: imageQuality });
   } else {
     // Default to JPEG for other formats
     pipeline = pipeline.jpeg({ quality: imageQuality, progressive: true });
-    outputMimeType = "image/jpeg";
+    processedImageMimeType = "image/jpeg";
   }
 
   // Apply even dimensions padding if enabled (PNG, WebP, AVIF only)
   if (
     evenDimensionsEnabled &&
-    (fileType === "image/png" ||
-      fileType === "image/webp" ||
-      fileType === "image/avif")
+    (originalFileType === "image/png" ||
+      originalFileType === "image/webp" ||
+      originalFileType === "image/avif")
   ) {
     const metadata = await pipeline.metadata();
     const width = metadata.width || 0;
@@ -85,13 +85,13 @@ const processImage = async (
     }
   }
 
-  return { pipeline, outputMimeType };
+  return { pipeline, processedImageMimeType };
 };
 
 export async function POST(req: Request) {
   try {
     const formData = await req.formData();
-    const file = formData.get("image") as File;
+    const originalFile = formData.get("image") as File;
     const imageQuality = parseInt(formData.get("imageQuality") as string) || 75;
     const trimBorderEnabled = formData.get("trimBorderEnabled") === "true";
     const trimBorderMode =
@@ -110,20 +110,20 @@ export async function POST(req: Request) {
       (formData.get("evenDimensionsPaddingHeight") as "top" | "bottom") ||
       "bottom";
 
-    if (!file) {
+    if (!originalFile) {
       return NextResponse.json(
         { message: "No image uploaded" },
         { status: 400 }
       );
     }
 
-    const buffer = Buffer.from(await file.arrayBuffer());
-    const fileType = file.type;
+    const originalImageBuffer = Buffer.from(await originalFile.arrayBuffer());
+    const originalFileType = originalFile.type;
 
     // Process image with all transformations in one call
-    const { pipeline, outputMimeType } = await processImage(
-      buffer,
-      fileType,
+    const { pipeline, processedImageMimeType } = await processImage(
+      originalImageBuffer,
+      originalFileType,
       imageQuality,
       trimBorderEnabled,
       trimBorderMode,
@@ -141,7 +141,7 @@ export async function POST(req: Request) {
       {
         status: 200,
         headers: {
-          "Content-Type": outputMimeType,
+          "Content-Type": processedImageMimeType,
           "Content-Length": compressedBuffer.length.toString(),
         },
       }

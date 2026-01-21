@@ -19,11 +19,11 @@ interface ImageCardProps {
 }
 
 export function ImageCard({ fileData }: ImageCardProps) {
-  const objectUrl = usePreviewUrl(fileData.originalFile);
-  const ext = getFileExtension(fileData.originalFile.name);
-  const fullName = ext ? `${fileData.originalFileName}.${ext}` : fileData.originalFileName;
+  const previewImageUrl = usePreviewUrl(fileData.originalFile);
+  const fileExtension = getFileExtension(fileData.originalFile.name);
+  const displayFileName = fileExtension ? `${fileData.originalFileName}.${fileExtension}` : fileData.originalFileName;
 
-  const handleDownload = (e: React.MouseEvent) => {
+  const handleDownloadCompressedFile = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (fileData.compressedFileBlob) {
       downloadCompressedImage(fileData.compressedFileBlob, fileData.originalFile.name);
@@ -31,7 +31,7 @@ export function ImageCard({ fileData }: ImageCardProps) {
   };
 
   // Determine color and sign for compression ratio
-  const getPercentageDisplay = () => {
+  const getCompressionPercentageDisplay = () => {
     if (!fileData.compressedPercent)
       return { text: "--", color: "text-muted-foreground" };
 
@@ -55,7 +55,7 @@ export function ImageCard({ fileData }: ImageCardProps) {
     }
   };
 
-  const percentageDisplay = getPercentageDisplay();
+  const compressionPercentageDisplay = getCompressionPercentageDisplay();
 
   return (
     <div className="group relative rounded-xl border-2 bg-card shadow-sm hover:shadow-lg hover:border-primary/30 transition-all overflow-hidden">
@@ -63,9 +63,9 @@ export function ImageCard({ fileData }: ImageCardProps) {
       <div className="bg-muted/50 p-3 pb-2">
         <div className="relative mx-auto w-fit">
           <Avatar className="h-16 w-16 rounded-lg overflow-hidden">
-            {objectUrl ? (
+            {previewImageUrl ? (
               <AvatarImage
-                src={objectUrl}
+                src={previewImageUrl}
                 alt={fileData.originalFileName}
                 className="object-cover w-full h-full"
               />
@@ -84,7 +84,7 @@ export function ImageCard({ fileData }: ImageCardProps) {
           {fileData.compressedFileBlob && !fileData.isCompressing && (
             <Button
               size="icon"
-              onClick={handleDownload}
+              onClick={handleDownloadCompressedFile}
               className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-6 w-6 rounded-md shadow-lg border-2 border-background bg-sky-500 hover:bg-sky-600 text-white"
             >
               <Download className="h-3 w-3" />
@@ -102,11 +102,11 @@ export function ImageCard({ fileData }: ImageCardProps) {
         <Tooltip>
           <TooltipTrigger asChild>
             <p className="text-[11px] font-medium text-center mb-1 truncate w-full cursor-default">
-              {fullName}
+              {displayFileName}
             </p>
           </TooltipTrigger>
           <TooltipContent>
-            <p>{fullName}</p>
+            <p>{displayFileName}</p>
           </TooltipContent>
         </Tooltip>
 
@@ -122,8 +122,8 @@ export function ImageCard({ fileData }: ImageCardProps) {
             <span className="text-muted-foreground">
               {fileData.compressedFileSize}
             </span>
-            <span className={`font-semibold ml-1 ${percentageDisplay.color}`}>
-              ({percentageDisplay.text})
+            <span className={`font-semibold ml-1 ${compressionPercentageDisplay.color}`}>
+              ({compressionPercentageDisplay.text})
             </span>
           </p>
         ) : (
