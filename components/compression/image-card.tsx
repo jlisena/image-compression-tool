@@ -46,7 +46,7 @@ export function ImageCard({ fileData }: ImageCardProps) {
     } else if (percent < 0) {
       // Negative = file size increased
       return {
-        text: `+${Math.abs(percent)}`,
+        text: `+${Math.abs(percent)}%`,
         color: "text-red-600 dark:text-red-400",
       };
     } else {
