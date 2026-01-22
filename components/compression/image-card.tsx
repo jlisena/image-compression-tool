@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Download, Loader2 } from "lucide-react";
+import { Download, Loader2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -16,9 +16,10 @@ import type { FileData } from "@/components/compression/compression-card";
 
 interface ImageCardProps {
   fileData: FileData;
+  onRemove: (fileId: string) => void;
 }
 
-export function ImageCard({ fileData }: ImageCardProps) {
+export function ImageCard({ fileData, onRemove }: ImageCardProps) {
   const previewImageUrl = usePreviewUrl(fileData.originalFile);
   const fileExtension = getFileExtension(fileData.originalFile.name);
   const displayFileName = fileExtension ? `${fileData.originalFileName}.${fileExtension}` : fileData.originalFileName;
@@ -59,6 +60,14 @@ export function ImageCard({ fileData }: ImageCardProps) {
 
   return (
     <div className="group relative rounded-xl border-2 bg-card shadow-sm hover:shadow-lg hover:border-primary/30 transition-all overflow-hidden">
+      {/* Delete button overlay */}
+      <button
+        onClick={() => onRemove(fileData.fileId)}
+        className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity z-10 bg-gray-400/60 dark:bg-gray-600/70 hover:bg-red-400/70 dark:hover:bg-red-400/70 text-white rounded-full w-4 h-4 shadow-sm flex items-center justify-center leading-none transition-colors"
+        aria-label="Remove image"
+      >
+        <X className="h-3 w-3 -ml-px" />
+      </button>
       {/* Avatar section with gray background */}
       <div className="bg-muted/50 p-3 pb-2">
         <div className="relative mx-auto w-fit">

@@ -63,6 +63,7 @@ export function CompressionCard() {
     handleFilesDrop,
     isCompressing,
     clearCompressionResults,
+    removeCompressionResult,
   } = useCompressionUpload(
     imageQualityEnabled ? imageQuality : 75,
     trimBorderEnabled,
@@ -128,6 +129,7 @@ export function CompressionCard() {
             onDrop={handleFilesDrop}
             isCompressing={isCompressing}
             compressionFilesList={compressionFilesList}
+            onRemoveFile={removeCompressionResult}
           />
 
           {/* Download All button */}

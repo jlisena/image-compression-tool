@@ -143,11 +143,16 @@ export function useCompressionUpload(
     setCompressionErrors([]);
   };
 
+  const removeCompressionResult = (fileId: string) => {
+    setCompressionFileResults((prev) => prev.filter((r) => r.fileId !== fileId));
+  };
+
   return {
     compressionFileResults,
     compressionErrors,
     handleFilesDrop,
     clearCompressionResults,
+    removeCompressionResult,
     isCompressing: compressionFileResults.some((r) => r.isCompressing),
   };
 }

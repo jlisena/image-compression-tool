@@ -10,9 +10,10 @@ interface DropzoneProps {
   onDrop: (files: File[]) => void;
   isCompressing: boolean;
   compressionFilesList: FileData[];
+  onRemoveFile: (fileId: string) => void;
 }
 
-export function Dropzone({ onDrop, isCompressing, compressionFilesList }: DropzoneProps) {
+export function Dropzone({ onDrop, isCompressing, compressionFilesList, onRemoveFile }: DropzoneProps) {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     noClick: true,
@@ -37,7 +38,7 @@ export function Dropzone({ onDrop, isCompressing, compressionFilesList }: Dropzo
       ) : (
         <div className="p-3 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
           {compressionFilesList.map((fileData) => (
-            <ImageCard key={fileData.fileId} fileData={fileData} />
+            <ImageCard key={fileData.fileId} fileData={fileData} onRemove={onRemoveFile} />
           ))}
         </div>
       )}
