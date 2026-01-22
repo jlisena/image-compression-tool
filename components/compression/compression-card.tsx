@@ -9,6 +9,7 @@ import { formatFileSize } from "@/lib/fileUtils";
 import { AdvancedSettings } from "@/components/settings/advanced-settings";
 import { Dropzone } from "@/components/compression/dropzone";
 import { useCompressionUpload } from "@/hooks/useCompressionUpload";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { getFileNameWithoutExt } from "@/lib/fileUtils";
 import { downloadBatchAsZip } from "@/lib/downloadUtils";
 
@@ -25,22 +26,37 @@ export interface FileData {
 }
 
 export function CompressionCard() {
-  const [imageQualityEnabled, setImageQualityEnabled] = React.useState(false);
-  const [imageQuality, setImageQuality] = React.useState(75);
-  const [trimBorderEnabled, setTrimBorderEnabled] = React.useState(false);
-  const [trimBorderMode, setTrimBorderMode] = React.useState<
+  const [imageQualityEnabled, setImageQualityEnabled] = useLocalStorage(
+    "imageQualityEnabled",
+    false
+  );
+  const [imageQuality, setImageQuality] = useLocalStorage("imageQuality", 75);
+  const [trimBorderEnabled, setTrimBorderEnabled] = useLocalStorage(
+    "trimBorderEnabled",
+    false
+  );
+  const [trimBorderMode, setTrimBorderMode] = useLocalStorage<
     "transparency" | "white" | "both"
-  >("transparency");
-  const [resizeImageEnabled, setResizeImageEnabled] = React.useState(false);
-  const [resizeImageWidth, setResizeImageWidth] = React.useState<number | null>(
+  >("trimBorderMode", "transparency");
+  const [resizeImageEnabled, setResizeImageEnabled] = useLocalStorage(
+    "resizeImageEnabled",
+    false
+  );
+  const [resizeImageWidth, setResizeImageWidth] = useLocalStorage<number | null>(
+    "resizeImageWidth",
     null
   );
-  const [evenDimensionsEnabled, setEvenDimensionsEnabled] =
-    React.useState(false);
+  const [evenDimensionsEnabled, setEvenDimensionsEnabled] = useLocalStorage(
+    "evenDimensionsEnabled",
+    false
+  );
   const [evenDimensionsPaddingWidth, setEvenDimensionsPaddingWidth] =
-    React.useState<"left" | "right">("left");
+    useLocalStorage<"left" | "right">("evenDimensionsPaddingWidth", "left");
   const [evenDimensionsPaddingHeight, setEvenDimensionsPaddingHeight] =
-    React.useState<"top" | "bottom">("bottom");
+    useLocalStorage<"top" | "bottom">(
+      "evenDimensionsPaddingHeight",
+      "bottom"
+    );
   const {
     compressionFileResults,
     compressionErrors,
