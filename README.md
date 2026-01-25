@@ -23,7 +23,7 @@ A web-based image compression utility that allows you to optimize images in mult
 - **File Management:** JSZip for batch downloads
 - **Theme Management:** next-themes
 
-## Installation
+## Installation (locally)
 
 ### Prerequisites
 
