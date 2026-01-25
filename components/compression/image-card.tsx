@@ -41,7 +41,7 @@ export function ImageCard({ fileData, onRemove }: ImageCardProps) {
     if (percent > 0) {
       // Positive = compression success (file got smaller)
       return {
-        text: `-${fileData.compressedPercent}`,
+        text: `-${percent}%`,
         color: "text-green-600 dark:text-green-400",
       };
     } else if (percent < 0) {
