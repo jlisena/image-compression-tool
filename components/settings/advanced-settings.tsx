@@ -20,6 +20,8 @@ interface AdvancedSettingsProps {
   onResizeImageEnabledChange: (enabled: boolean) => void;
   resizeImageWidth: number | null;
   onResizeImageWidthChange: (width: number | null) => void;
+  resizeImageHeight: number | null;
+  onResizeImageHeightChange: (height: number | null) => void;
   evenDimensionsEnabled: boolean;
   onEvenDimensionsEnabledChange: (enabled: boolean) => void;
   evenDimensionsPaddingWidth: "left" | "right";
@@ -41,6 +43,8 @@ export function AdvancedSettings({
   onResizeImageEnabledChange,
   resizeImageWidth,
   onResizeImageWidthChange,
+  resizeImageHeight,
+  onResizeImageHeightChange,
   evenDimensionsEnabled,
   onEvenDimensionsEnabledChange,
   evenDimensionsPaddingWidth,
@@ -73,6 +77,8 @@ export function AdvancedSettings({
             onResizeImageEnabledChange={onResizeImageEnabledChange}
             resizeImageWidth={resizeImageWidth}
             onResizeImageWidthChange={onResizeImageWidthChange}
+            resizeImageHeight={resizeImageHeight}
+            onResizeImageHeightChange={onResizeImageHeightChange}
           />
           <Separator />
           <DimensionPadding

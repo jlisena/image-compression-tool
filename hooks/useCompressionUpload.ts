@@ -19,6 +19,7 @@ export function useCompressionUpload(
   trimImageMode: "transparency" | "white" | "both" = "transparency",
   resizeImageEnabled: boolean = false,
   resizeImageWidth: number | null = null,
+  resizeImageHeight: number | null = null,
   evenDimensionsEnabled: boolean = false,
   evenDimensionsPaddingWidth: "left" | "right" = "left",
   evenDimensionsPaddingHeight: "top" | "bottom" = "bottom"
@@ -76,6 +77,8 @@ export function useCompressionUpload(
           formData.append("resizeImageEnabled", resizeImageEnabled.toString());
           if (resizeImageWidth)
             formData.append("resizeImageWidth", resizeImageWidth.toString());
+          if (resizeImageHeight)
+            formData.append("resizeImageHeight", resizeImageHeight.toString());
           formData.append(
             "evenDimensionsEnabled",
             evenDimensionsEnabled.toString()

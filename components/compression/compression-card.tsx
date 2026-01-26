@@ -45,6 +45,9 @@ export function CompressionCard() {
   const [resizeImageWidth, setResizeImageWidth] = useLocalStorage<
     number | null
   >("resizeImageWidth", null);
+  const [resizeImageHeight, setResizeImageHeight] = useLocalStorage<
+    number | null
+  >("resizeImageHeight", null);
   const [evenDimensionsEnabled, setEvenDimensionsEnabled] = useLocalStorage(
     "evenDimensionsEnabled",
     false,
@@ -66,6 +69,7 @@ export function CompressionCard() {
     trimImageMode,
     resizeImageEnabled,
     resizeImageWidth,
+    resizeImageHeight,
     evenDimensionsEnabled,
     evenDimensionsPaddingWidth,
     evenDimensionsPaddingHeight,
@@ -176,6 +180,8 @@ export function CompressionCard() {
             onResizeImageEnabledChange={setResizeImageEnabled}
             resizeImageWidth={resizeImageWidth}
             onResizeImageWidthChange={setResizeImageWidth}
+            resizeImageHeight={resizeImageHeight}
+            onResizeImageHeightChange={setResizeImageHeight}
             evenDimensionsEnabled={evenDimensionsEnabled}
             onEvenDimensionsEnabledChange={setEvenDimensionsEnabled}
             evenDimensionsPaddingWidth={evenDimensionsPaddingWidth}

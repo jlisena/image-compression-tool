@@ -9,6 +9,7 @@ const processImage = async (
   trimImageMode: "transparency" | "white" | "both",
   resizeImageEnabled: boolean,
   resizeImageWidth: number | null,
+  resizeImageHeight: number | null,
   evenDimensionsEnabled: boolean,
   evenDimensionsPaddingWidth: "left" | "right",
   evenDimensionsPaddingHeight: "top" | "bottom"
@@ -33,11 +34,14 @@ const processImage = async (
     }
   }
 
-  if (resizeImageEnabled && resizeImageWidth) {
-    pipeline = pipeline.resize(resizeImageWidth, undefined, {
+  if (resizeImageEnabled && (resizeImageWidth || resizeImageHeight)) {
+    // If both dimensions are specified, use "fill" to force exact dimensions
+    // If only one is specified, use "inside" to maintain aspect ratio
+    const fitMode = resizeImageWidth && resizeImageHeight ? "fill" : "inside";
+    pipeline = pipeline.resize(resizeImageWidth || undefined, resizeImageHeight || undefined, {
       // Upscale (false) or downscale based on original size
       withoutEnlargement: false,
-      fit: "inside",
+      fit: fitMode,
     });
     // Materialize the resize so even dimensions check gets the correct dimensions
     const resizedBuffer = await pipeline.toBuffer({ resolveWithObject: false }) as Buffer;
@@ -104,6 +108,9 @@ export async function POST(req: Request) {
     const resizeImageWidth = formData.get("resizeImageWidth")
       ? parseInt(formData.get("resizeImageWidth") as string)
       : null;
+    const resizeImageHeight = formData.get("resizeImageHeight")
+      ? parseInt(formData.get("resizeImageHeight") as string)
+      : null;
     const evenDimensionsEnabled =
       formData.get("evenDimensionsEnabled") === "true";
     const evenDimensionsPaddingWidth =
@@ -132,6 +139,7 @@ export async function POST(req: Request) {
       trimImageMode,
       resizeImageEnabled,
       resizeImageWidth,
+      resizeImageHeight,
       evenDimensionsEnabled,
       evenDimensionsPaddingWidth,
       evenDimensionsPaddingHeight

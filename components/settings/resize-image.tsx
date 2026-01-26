@@ -7,15 +7,24 @@ import { Switch } from "@/components/ui/switch";
 interface ResizeImageProps {
   resizeImageWidth: number | null;
   onResizeImageWidthChange: (width: number | null) => void;
+  resizeImageHeight: number | null;
+  onResizeImageHeightChange: (height: number | null) => void;
 }
 
 export function ResizeImage({
   resizeImageWidth,
   onResizeImageWidthChange,
+  resizeImageHeight,
+  onResizeImageHeightChange,
 }: ResizeImageProps) {
   const handleWidthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newWidth = e.target.value ? parseInt(e.target.value) : null;
     onResizeImageWidthChange(newWidth);
+  };
+
+  const handleHeightChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newHeight = e.target.value ? parseInt(e.target.value) : null;
+    onResizeImageHeightChange(newHeight);
   };
 
   return (
@@ -31,6 +40,17 @@ export function ResizeImage({
         placeholder="Auto"
         className="w-20 h-8"
       />
+      <label className="text-sm font-medium whitespace-nowrap">
+        Height (px):
+      </label>
+      <Input
+        type="number"
+        min="1"
+        value={resizeImageHeight || ""}
+        onChange={handleHeightChange}
+        placeholder="Auto"
+        className="w-20 h-8"
+      />
     </div>
   );
 }
@@ -40,6 +60,8 @@ interface ResizeImageSettingsProps {
   onResizeImageEnabledChange: (enabled: boolean) => void;
   resizeImageWidth: number | null;
   onResizeImageWidthChange: (width: number | null) => void;
+  resizeImageHeight: number | null;
+  onResizeImageHeightChange: (height: number | null) => void;
 }
 
 export function ResizeImageSettings({
@@ -47,6 +69,8 @@ export function ResizeImageSettings({
   onResizeImageEnabledChange,
   resizeImageWidth,
   onResizeImageWidthChange,
+  resizeImageHeight,
+  onResizeImageHeightChange,
 }: ResizeImageSettingsProps) {
   return (
     <div className="pl-4">
@@ -68,6 +92,8 @@ export function ResizeImageSettings({
           <ResizeImage
             resizeImageWidth={resizeImageWidth}
             onResizeImageWidthChange={onResizeImageWidthChange}
+            resizeImageHeight={resizeImageHeight}
+            onResizeImageHeightChange={onResizeImageHeightChange}
           />
         </div>
       )}
