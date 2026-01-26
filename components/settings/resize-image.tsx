@@ -3,6 +3,7 @@
 import React from "react";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface ResizeImageProps {
   resizeImageMode: "manual" | "percentage";
@@ -42,47 +43,18 @@ export function ResizeImage({
 
   return (
     <div className="space-y-3">
-      {/* Mode selector */}
-      <div className="flex gap-4">
-        <div className="flex items-center gap-2">
-          <input
-            type="radio"
-            id="resize-manual"
-            name="resize-mode"
-            value="manual"
-            checked={resizeImageMode === "manual"}
-            onChange={() => onResizeImageModeChange("manual")}
-            className="h-4 w-4 cursor-pointer"
-          />
-          <label
-            htmlFor="resize-manual"
-            className="text-sm font-medium cursor-pointer"
-          >
-            Manual
-          </label>
-        </div>
-        <div className="flex items-center gap-2">
-          <input
-            type="radio"
-            id="resize-percentage"
-            name="resize-mode"
-            value="percentage"
-            checked={resizeImageMode === "percentage"}
-            onChange={() => onResizeImageModeChange("percentage")}
-            className="h-4 w-4 cursor-pointer"
-          />
-          <label
-            htmlFor="resize-percentage"
-            className="text-sm font-medium cursor-pointer"
-          >
-            Percentage
-          </label>
-        </div>
-      </div>
+      <Tabs
+        value={resizeImageMode}
+        onValueChange={(value) =>
+          onResizeImageModeChange(value as "manual" | "percentage")
+        }
+      >
+        <TabsList className="grid grid-cols-[120px_120px] gap-2 rounded-lg border bg-muted">
+          <TabsTrigger value="manual">Manual</TabsTrigger>
+          <TabsTrigger value="percentage">Percentage</TabsTrigger>
+        </TabsList>
 
-      {/* Manual dimensions inputs */}
-      {resizeImageMode === "manual" && (
-        <>
+        <TabsContent value="manual" className="space-y-3">
           <div className="flex items-center gap-3">
             <label className="text-sm font-medium whitespace-nowrap w-11">
               Width:
@@ -109,26 +81,25 @@ export function ResizeImage({
               className="w-20 h-8"
             />
           </div>
-        </>
-      )}
+        </TabsContent>
 
-      {/* Percentage input */}
-      {resizeImageMode === "percentage" && (
-        <div className="flex items-center gap-3">
-          <label className="text-sm font-medium whitespace-nowrap">
-            Percentage:
-          </label>
-          <Input
-            type="number"
-            min="1"
-            max="100"
-            value={resizeImagePercentage || ""}
-            onChange={handlePercentageChange}
-            placeholder="100"
-            className="w-20 h-8"
-          />
-        </div>
-      )}
+        <TabsContent value="percentage">
+          <div className="flex items-center gap-3">
+            <label className="text-sm font-medium whitespace-nowrap">
+              Percentage:
+            </label>
+            <Input
+              type="number"
+              min="1"
+              max="400"
+              value={resizeImagePercentage || ""}
+              onChange={handlePercentageChange}
+              placeholder="100"
+              className="w-20 h-8"
+            />
+          </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
