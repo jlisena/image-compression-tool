@@ -25,8 +25,8 @@ export function ImageQuality({
       </div>
       <div className="max-w-xs">
         <Slider
-          min={50}
-          max={90}
+          min={1}
+          max={100}
           step={1}
           value={[imageQuality]}
           onValueChange={(value) => onImageQualityChange(value[0])}
