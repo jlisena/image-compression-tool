@@ -42,12 +42,18 @@ export function CompressionCard() {
     "resizeImageEnabled",
     false,
   );
+  const [resizeImageMode, setResizeImageMode] = useLocalStorage<
+    "manual" | "percentage"
+  >("resizeImageMode", "manual");
   const [resizeImageWidth, setResizeImageWidth] = useLocalStorage<
     number | null
   >("resizeImageWidth", null);
   const [resizeImageHeight, setResizeImageHeight] = useLocalStorage<
     number | null
   >("resizeImageHeight", null);
+  const [resizeImagePercentage, setResizeImagePercentage] = useLocalStorage<
+    number | null
+  >("resizeImagePercentage", null);
   const [evenDimensionsEnabled, setEvenDimensionsEnabled] = useLocalStorage(
     "evenDimensionsEnabled",
     false,
@@ -68,8 +74,10 @@ export function CompressionCard() {
     trimImageEnabled,
     trimImageMode,
     resizeImageEnabled,
+    resizeImageMode,
     resizeImageWidth,
     resizeImageHeight,
+    resizeImagePercentage,
     evenDimensionsEnabled,
     evenDimensionsPaddingWidth,
     evenDimensionsPaddingHeight,
@@ -178,10 +186,14 @@ export function CompressionCard() {
             onTrimImageModeChange={setTrimImageMode}
             resizeImageEnabled={resizeImageEnabled}
             onResizeImageEnabledChange={setResizeImageEnabled}
+            resizeImageMode={resizeImageMode}
+            onResizeImageModeChange={setResizeImageMode}
             resizeImageWidth={resizeImageWidth}
             onResizeImageWidthChange={setResizeImageWidth}
             resizeImageHeight={resizeImageHeight}
             onResizeImageHeightChange={setResizeImageHeight}
+            resizeImagePercentage={resizeImagePercentage}
+            onResizeImagePercentageChange={setResizeImagePercentage}
             evenDimensionsEnabled={evenDimensionsEnabled}
             onEvenDimensionsEnabledChange={setEvenDimensionsEnabled}
             evenDimensionsPaddingWidth={evenDimensionsPaddingWidth}

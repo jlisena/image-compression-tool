@@ -18,8 +18,10 @@ export function useCompressionUpload(
   trimImageEnabled: boolean = false,
   trimImageMode: "transparency" | "white" | "both" = "transparency",
   resizeImageEnabled: boolean = false,
+  resizeImageMode: "manual" | "percentage" = "manual",
   resizeImageWidth: number | null = null,
   resizeImageHeight: number | null = null,
+  resizeImagePercentage: number | null = null,
   evenDimensionsEnabled: boolean = false,
   evenDimensionsPaddingWidth: "left" | "right" = "left",
   evenDimensionsPaddingHeight: "top" | "bottom" = "bottom"
@@ -75,10 +77,16 @@ export function useCompressionUpload(
             formData.append("trimImageMode", trimImageMode);
           }
           formData.append("resizeImageEnabled", resizeImageEnabled.toString());
-          if (resizeImageWidth)
-            formData.append("resizeImageWidth", resizeImageWidth.toString());
-          if (resizeImageHeight)
-            formData.append("resizeImageHeight", resizeImageHeight.toString());
+          formData.append("resizeImageMode", resizeImageMode);
+          if (resizeImageMode === "manual") {
+            if (resizeImageWidth)
+              formData.append("resizeImageWidth", resizeImageWidth.toString());
+            if (resizeImageHeight)
+              formData.append("resizeImageHeight", resizeImageHeight.toString());
+          } else if (resizeImageMode === "percentage") {
+            if (resizeImagePercentage)
+              formData.append("resizeImagePercentage", resizeImagePercentage.toString());
+          }
           formData.append(
             "evenDimensionsEnabled",
             evenDimensionsEnabled.toString()

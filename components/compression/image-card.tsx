@@ -22,12 +22,17 @@ interface ImageCardProps {
 export function ImageCard({ fileData, onRemove }: ImageCardProps) {
   const previewImageUrl = usePreviewUrl(fileData.originalFile);
   const fileExtension = getFileExtension(fileData.originalFile.name);
-  const displayFileName = fileExtension ? `${fileData.originalFileName}.${fileExtension}` : fileData.originalFileName;
+  const displayFileName = fileExtension
+    ? `${fileData.originalFileName}.${fileExtension}`
+    : fileData.originalFileName;
 
   const handleDownloadCompressedFile = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (fileData.compressedFileBlob) {
-      downloadCompressedImage(fileData.compressedFileBlob, fileData.originalFile.name);
+      downloadCompressedImage(
+        fileData.compressedFileBlob,
+        fileData.originalFile.name,
+      );
     }
   };
 
@@ -69,7 +74,7 @@ export function ImageCard({ fileData, onRemove }: ImageCardProps) {
         <X className="h-3 w-3 -ml-px" />
       </button>
       {/* Avatar section with gray background */}
-      <div className="bg-muted/50 p-3 pb-2">
+      <div className="bg-muted/60 p-3 pb-2">
         <div className="relative mx-auto w-fit">
           <Avatar className="h-16 w-16 rounded-lg overflow-hidden">
             {previewImageUrl ? (
@@ -126,12 +131,16 @@ export function ImageCard({ fileData, onRemove }: ImageCardProps) {
           </p>
         ) : fileData.compressedFileBlob ? (
           <p className="text-[10px] text-center">
-            <span className="text-muted-foreground">{fileData.originalFileSize}</span>
+            <span className="text-muted-foreground">
+              {fileData.originalFileSize}
+            </span>
             <span className="text-muted-foreground mx-1">→</span>
             <span className="text-muted-foreground">
               {fileData.compressedFileSize}
             </span>
-            <span className={`font-semibold ml-1 ${compressionPercentageDisplay.color}`}>
+            <span
+              className={`font-semibold ml-1 ${compressionPercentageDisplay.color}`}
+            >
               ({compressionPercentageDisplay.text})
             </span>
           </p>

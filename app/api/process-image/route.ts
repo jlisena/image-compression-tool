@@ -8,8 +8,10 @@ const processImage = async (
   trimImageEnabled: boolean,
   trimImageMode: "transparency" | "white" | "both",
   resizeImageEnabled: boolean,
+  resizeImageMode: "manual" | "percentage",
   resizeImageWidth: number | null,
   resizeImageHeight: number | null,
+  resizeImagePercentage: number | null,
   evenDimensionsEnabled: boolean,
   evenDimensionsPaddingWidth: "left" | "right",
   evenDimensionsPaddingHeight: "top" | "bottom"
@@ -34,18 +36,36 @@ const processImage = async (
     }
   }
 
-  if (resizeImageEnabled && (resizeImageWidth || resizeImageHeight)) {
-    // If both dimensions are specified, use "fill" to force exact dimensions
-    // If only one is specified, use "inside" to maintain aspect ratio
-    const fitMode = resizeImageWidth && resizeImageHeight ? "fill" : "inside";
-    pipeline = pipeline.resize(resizeImageWidth || undefined, resizeImageHeight || undefined, {
-      // Upscale (false) or downscale based on original size
-      withoutEnlargement: false,
-      fit: fitMode,
-    });
-    // Materialize the resize so even dimensions check gets the correct dimensions
-    const resizedBuffer = await pipeline.toBuffer({ resolveWithObject: false }) as Buffer;
-    pipeline = sharp(resizedBuffer);
+  if (resizeImageEnabled) {
+    let width: number | undefined;
+    let height: number | undefined;
+
+    if (resizeImageMode === "percentage" && resizeImagePercentage) {
+      // Calculate dimensions based on percentage
+      const metadata = await sharp(originalImageBuffer).metadata();
+      const originalWidth = metadata.width || 0;
+      const originalHeight = metadata.height || 0;
+      const factor = resizeImagePercentage / 100;
+      width = Math.round(originalWidth * factor);
+      height = Math.round(originalHeight * factor);
+    } else if (resizeImageMode === "manual" && (resizeImageWidth || resizeImageHeight)) {
+      width = resizeImageWidth || undefined;
+      height = resizeImageHeight || undefined;
+    }
+
+    if (width || height) {
+      // If both dimensions are specified, use "fill" to force exact dimensions
+      // If only one is specified, use "inside" to maintain aspect ratio
+      const fitMode = width && height ? "fill" : "inside";
+      pipeline = pipeline.resize(width, height, {
+        // Upscale (false) or downscale based on original size
+        withoutEnlargement: false,
+        fit: fitMode,
+      });
+      // Materialize the resize so even dimensions check gets the correct dimensions
+      const resizedBuffer = await pipeline.toBuffer({ resolveWithObject: false }) as Buffer;
+      pipeline = sharp(resizedBuffer);
+    }
   }
 
   // Apply format-specific compression
@@ -105,11 +125,15 @@ export async function POST(req: Request) {
       (formData.get("trimImageMode") as "transparency" | "white" | "both") ||
       "transparency";
     const resizeImageEnabled = formData.get("resizeImageEnabled") === "true";
+    const resizeImageMode = (formData.get("resizeImageMode") as "manual" | "percentage") || "manual";
     const resizeImageWidth = formData.get("resizeImageWidth")
       ? parseInt(formData.get("resizeImageWidth") as string)
       : null;
     const resizeImageHeight = formData.get("resizeImageHeight")
       ? parseInt(formData.get("resizeImageHeight") as string)
+      : null;
+    const resizeImagePercentage = formData.get("resizeImagePercentage")
+      ? parseInt(formData.get("resizeImagePercentage") as string)
       : null;
     const evenDimensionsEnabled =
       formData.get("evenDimensionsEnabled") === "true";
@@ -138,8 +162,10 @@ export async function POST(req: Request) {
       trimImageEnabled,
       trimImageMode,
       resizeImageEnabled,
+      resizeImageMode,
       resizeImageWidth,
       resizeImageHeight,
+      resizeImagePercentage,
       evenDimensionsEnabled,
       evenDimensionsPaddingWidth,
       evenDimensionsPaddingHeight

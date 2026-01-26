@@ -65,7 +65,7 @@ export function ImageQualitySettings({
         </label>
       </div>
       {imageQualityEnabled && (
-        <div className="pl-11 mt-3 p-3 bg-muted/40 rounded-md">
+        <div className="pl-11 mt-3 p-3 bg-muted/60 rounded-md">
           <ImageQuality
             imageQuality={imageQuality}
             onImageQualityChange={onImageQualityChange}

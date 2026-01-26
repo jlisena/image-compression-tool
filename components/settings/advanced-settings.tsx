@@ -18,10 +18,14 @@ interface AdvancedSettingsProps {
   onTrimImageModeChange: (mode: "transparency" | "white" | "both") => void;
   resizeImageEnabled: boolean;
   onResizeImageEnabledChange: (enabled: boolean) => void;
+  resizeImageMode: "manual" | "percentage";
+  onResizeImageModeChange: (mode: "manual" | "percentage") => void;
   resizeImageWidth: number | null;
   onResizeImageWidthChange: (width: number | null) => void;
   resizeImageHeight: number | null;
   onResizeImageHeightChange: (height: number | null) => void;
+  resizeImagePercentage: number | null;
+  onResizeImagePercentageChange: (percentage: number | null) => void;
   evenDimensionsEnabled: boolean;
   onEvenDimensionsEnabledChange: (enabled: boolean) => void;
   evenDimensionsPaddingWidth: "left" | "right";
@@ -41,10 +45,14 @@ export function AdvancedSettings({
   onTrimImageModeChange,
   resizeImageEnabled,
   onResizeImageEnabledChange,
+  resizeImageMode,
+  onResizeImageModeChange,
   resizeImageWidth,
   onResizeImageWidthChange,
   resizeImageHeight,
   onResizeImageHeightChange,
+  resizeImagePercentage,
+  onResizeImagePercentageChange,
   evenDimensionsEnabled,
   onEvenDimensionsEnabledChange,
   evenDimensionsPaddingWidth,
@@ -54,46 +62,48 @@ export function AdvancedSettings({
 }: AdvancedSettingsProps) {
   return (
     <>
-      <div className="text-base font-bold">
-        Advanced Settings
+      <div className="text-base font-bold">Advanced Settings</div>
+      <div className="pt-4 space-y-4">
+        <ImageQualitySettings
+          imageQualityEnabled={imageQualityEnabled}
+          onImageQualityEnabledChange={onImageQualityEnabledChange}
+          imageQuality={imageQuality}
+          onImageQualityChange={onImageQualityChange}
+        />
+        <Separator />
+        <TrimImage
+          trimImageEnabled={trimImageEnabled}
+          onTrimImageEnabledChange={onTrimImageEnabledChange}
+          trimImageMode={trimImageMode}
+          onTrimImageModeChange={onTrimImageModeChange}
+        />
+        <Separator />
+        <ResizeImageSettings
+          resizeImageEnabled={resizeImageEnabled}
+          onResizeImageEnabledChange={onResizeImageEnabledChange}
+          resizeImageMode={resizeImageMode}
+          onResizeImageModeChange={onResizeImageModeChange}
+          resizeImageWidth={resizeImageWidth}
+          onResizeImageWidthChange={onResizeImageWidthChange}
+          resizeImageHeight={resizeImageHeight}
+          onResizeImageHeightChange={onResizeImageHeightChange}
+          resizeImagePercentage={resizeImagePercentage}
+          onResizeImagePercentageChange={onResizeImagePercentageChange}
+        />
+        <Separator />
+        <DimensionPadding
+          evenDimensionsEnabled={evenDimensionsEnabled}
+          onEvenDimensionsEnabledChange={onEvenDimensionsEnabledChange}
+          evenDimensionsPaddingWidth={evenDimensionsPaddingWidth}
+          onEvenDimensionsPaddingWidthChange={
+            onEvenDimensionsPaddingWidthChange
+          }
+          evenDimensionsPaddingHeight={evenDimensionsPaddingHeight}
+          onEvenDimensionsPaddingHeightChange={
+            onEvenDimensionsPaddingHeightChange
+          }
+        />
       </div>
-        <div className="pt-4 space-y-4">
-          <ImageQualitySettings
-            imageQualityEnabled={imageQualityEnabled}
-            onImageQualityEnabledChange={onImageQualityEnabledChange}
-            imageQuality={imageQuality}
-            onImageQualityChange={onImageQualityChange}
-          />
-          <Separator />
-          <TrimImage
-            trimImageEnabled={trimImageEnabled}
-            onTrimImageEnabledChange={onTrimImageEnabledChange}
-            trimImageMode={trimImageMode}
-            onTrimImageModeChange={onTrimImageModeChange}
-          />
-          <Separator />
-          <ResizeImageSettings
-            resizeImageEnabled={resizeImageEnabled}
-            onResizeImageEnabledChange={onResizeImageEnabledChange}
-            resizeImageWidth={resizeImageWidth}
-            onResizeImageWidthChange={onResizeImageWidthChange}
-            resizeImageHeight={resizeImageHeight}
-            onResizeImageHeightChange={onResizeImageHeightChange}
-          />
-          <Separator />
-          <DimensionPadding
-            evenDimensionsEnabled={evenDimensionsEnabled}
-            onEvenDimensionsEnabledChange={onEvenDimensionsEnabledChange}
-            evenDimensionsPaddingWidth={evenDimensionsPaddingWidth}
-            onEvenDimensionsPaddingWidthChange={
-              onEvenDimensionsPaddingWidthChange
-            }
-            evenDimensionsPaddingHeight={evenDimensionsPaddingHeight}
-            onEvenDimensionsPaddingHeightChange={
-              onEvenDimensionsPaddingHeightChange
-            }
-          />
-        </div>
-      </>
+    </>
   );
 }
