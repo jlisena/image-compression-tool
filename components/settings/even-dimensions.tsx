@@ -2,6 +2,7 @@
 
 import React from "react";
 import { Switch } from "@/components/ui/switch";
+import { InfoTooltip } from "@/components/ui/info-tooltip";
 import {
   Select,
   SelectContent,
@@ -41,6 +42,7 @@ export function DimensionPadding({
         >
           Even File Dimensions (no JPEG)
         </label>
+        <InfoTooltip content="Ensures image dimensions are even numbers (divisible by 2). Required by some video codecs and formats. Adds transparent padding if needed." />
       </div>
       {evenDimensionsEnabled && (
         <div className="space-y-3 mt-3 pl-11 p-3 bg-muted/60 rounded-md">

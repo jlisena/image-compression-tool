@@ -4,6 +4,7 @@ import React from "react";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { InfoTooltip } from "@/components/ui/info-tooltip";
 
 interface ResizeImageProps {
   resizeImageMode: "manual" | "percentage";
@@ -143,6 +144,7 @@ export function ResizeImageSettings({
         >
           Resize Image
         </label>
+        <InfoTooltip content="Scale your image up or down. Use Manual mode to set specific dimensions, or Percentage mode to scale proportionally. Entering both width and height will stretch/squeeze the image." />
       </div>
       {resizeImageEnabled && (
         <div className="pl-11 mt-3 p-3 bg-muted/60 rounded-md">

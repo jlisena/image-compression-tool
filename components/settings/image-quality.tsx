@@ -3,6 +3,7 @@
 import React from "react";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
+import { InfoTooltip } from "@/components/ui/info-tooltip";
 
 interface ImageQualityProps {
   imageQuality: number;
@@ -63,6 +64,7 @@ export function ImageQualitySettings({
         >
           Image Quality
         </label>
+        <InfoTooltip content="Reduce file size by lowering quality. Lower values result in smaller files but reduced visual quality. Best for web and social media." />
       </div>
       {imageQualityEnabled && (
         <div className="pl-11 mt-3 p-3 bg-muted/60 rounded-md">

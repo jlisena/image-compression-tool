@@ -2,6 +2,7 @@
 
 import React from "react";
 import { Switch } from "@/components/ui/switch";
+import { InfoTooltip } from "@/components/ui/info-tooltip";
 import {
   Select,
   SelectContent,
@@ -37,6 +38,7 @@ export function TrimImage({
         >
           Trim Image
         </label>
+        <InfoTooltip content="Remove unnecessary transparent or white borders around your image. Useful for cleaning up exported graphics and screenshots." />
       </div>
       {trimImageEnabled && (
         <div className="mt-3 pl-11 p-3 bg-muted/60 rounded-md">
