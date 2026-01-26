@@ -28,35 +28,31 @@ export interface FileData {
 export function CompressionCard() {
   const [imageQualityEnabled, setImageQualityEnabled] = useLocalStorage(
     "imageQualityEnabled",
-    false
+    false,
   );
   const [imageQuality, setImageQuality] = useLocalStorage("imageQuality", 75);
-  const [trimBorderEnabled, setTrimBorderEnabled] = useLocalStorage(
-    "trimBorderEnabled",
-    false
+  const [trimImageEnabled, setTrimImageEnabled] = useLocalStorage(
+    "trimImageEnabled",
+    false,
   );
-  const [trimBorderMode, setTrimBorderMode] = useLocalStorage<
+  const [trimImageMode, setTrimImageMode] = useLocalStorage<
     "transparency" | "white" | "both"
-  >("trimBorderMode", "transparency");
+  >("trimImageMode", "transparency");
   const [resizeImageEnabled, setResizeImageEnabled] = useLocalStorage(
     "resizeImageEnabled",
-    false
+    false,
   );
-  const [resizeImageWidth, setResizeImageWidth] = useLocalStorage<number | null>(
-    "resizeImageWidth",
-    null
-  );
+  const [resizeImageWidth, setResizeImageWidth] = useLocalStorage<
+    number | null
+  >("resizeImageWidth", null);
   const [evenDimensionsEnabled, setEvenDimensionsEnabled] = useLocalStorage(
     "evenDimensionsEnabled",
-    false
+    false,
   );
   const [evenDimensionsPaddingWidth, setEvenDimensionsPaddingWidth] =
     useLocalStorage<"left" | "right">("evenDimensionsPaddingWidth", "left");
   const [evenDimensionsPaddingHeight, setEvenDimensionsPaddingHeight] =
-    useLocalStorage<"top" | "bottom">(
-      "evenDimensionsPaddingHeight",
-      "bottom"
-    );
+    useLocalStorage<"top" | "bottom">("evenDimensionsPaddingHeight", "bottom");
   const {
     compressionFileResults,
     compressionErrors,
@@ -66,33 +62,35 @@ export function CompressionCard() {
     removeCompressionResult,
   } = useCompressionUpload(
     imageQualityEnabled ? imageQuality : 75,
-    trimBorderEnabled,
-    trimBorderMode,
+    trimImageEnabled,
+    trimImageMode,
     resizeImageEnabled,
     resizeImageWidth,
     evenDimensionsEnabled,
     evenDimensionsPaddingWidth,
-    evenDimensionsPaddingHeight
+    evenDimensionsPaddingHeight,
   );
 
-  const compressionFilesList: FileData[] = compressionFileResults.map((result) => ({
-    fileId: result.fileId,
-    originalFile: result.originalFile,
-    originalFileName: getFileNameWithoutExt(result.originalFile.name),
-    originalFileType: result.originalFile.type.toUpperCase().split("/")[1],
-    originalFileSize: formatFileSize(result.originalFileSize),
-    compressedPercent: result.compressedRatio
-      ? `${result.compressedRatio.toFixed(0)}%`
-      : "--",
-    compressedFileSize: result.compressedFileSize
-      ? formatFileSize(result.compressedFileSize)
-      : "--",
-    compressedFileBlob: result.compressedFileBlob,
-    isCompressing: result.isCompressing,
-  }));
+  const compressionFilesList: FileData[] = compressionFileResults.map(
+    (result) => ({
+      fileId: result.fileId,
+      originalFile: result.originalFile,
+      originalFileName: getFileNameWithoutExt(result.originalFile.name),
+      originalFileType: result.originalFile.type.toUpperCase().split("/")[1],
+      originalFileSize: formatFileSize(result.originalFileSize),
+      compressedPercent: result.compressedRatio
+        ? `${result.compressedRatio.toFixed(0)}%`
+        : "--",
+      compressedFileSize: result.compressedFileSize
+        ? formatFileSize(result.compressedFileSize)
+        : "--",
+      compressedFileBlob: result.compressedFileBlob,
+      isCompressing: result.isCompressing,
+    }),
+  );
 
   const completedCount = compressionFileResults.filter(
-    (r) => r.compressedFileBlob
+    (r) => r.compressedFileBlob,
   ).length;
   const allComplete =
     completedCount === compressionFileResults.length &&
@@ -170,10 +168,10 @@ export function CompressionCard() {
             onImageQualityEnabledChange={setImageQualityEnabled}
             imageQuality={imageQuality}
             onImageQualityChange={setImageQuality}
-            trimBorderEnabled={trimBorderEnabled}
-            onTrimBorderEnabledChange={setTrimBorderEnabled}
-            trimBorderMode={trimBorderMode}
-            onTrimBorderModeChange={setTrimBorderMode}
+            trimImageEnabled={trimImageEnabled}
+            onTrimImageEnabledChange={setTrimImageEnabled}
+            trimImageMode={trimImageMode}
+            onTrimImageModeChange={setTrimImageMode}
             resizeImageEnabled={resizeImageEnabled}
             onResizeImageEnabledChange={setResizeImageEnabled}
             resizeImageWidth={resizeImageWidth}

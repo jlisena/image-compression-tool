@@ -15,8 +15,8 @@ export interface CompressionResult {
 
 export function useCompressionUpload(
   imageQuality: number = 75,
-  trimBorderEnabled: boolean = false,
-  trimBorderMode: "transparency" | "white" | "both" = "transparency",
+  trimImageEnabled: boolean = false,
+  trimImageMode: "transparency" | "white" | "both" = "transparency",
   resizeImageEnabled: boolean = false,
   resizeImageWidth: number | null = null,
   evenDimensionsEnabled: boolean = false,
@@ -69,9 +69,9 @@ export function useCompressionUpload(
           const formData = new FormData();
           formData.append("image", file);
           formData.append("imageQuality", imageQuality.toString());
-          formData.append("trimBorderEnabled", trimBorderEnabled.toString());
-          if (trimBorderEnabled) {
-            formData.append("trimBorderMode", trimBorderMode);
+          formData.append("trimImageEnabled", trimImageEnabled.toString());
+          if (trimImageEnabled) {
+            formData.append("trimImageMode", trimImageMode);
           }
           formData.append("resizeImageEnabled", resizeImageEnabled.toString());
           if (resizeImageWidth)

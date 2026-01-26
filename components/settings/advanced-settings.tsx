@@ -1,16 +1,10 @@
 "use client";
 
 import React from "react";
-import {
-  Accordion,
-  AccordionItem,
-  AccordionTrigger,
-  AccordionContent,
-} from "@/components/ui/accordion";
 import { Separator } from "@/components/ui/separator";
 import { ImageQualitySettings } from "@/components/settings/image-quality";
 import { ResizeImageSettings } from "@/components/settings/resize-image";
-import { TrimBorder } from "@/components/settings/trim-border";
+import { TrimImage } from "@/components/settings/trim-image";
 import { DimensionPadding } from "@/components/settings/even-dimensions";
 
 interface AdvancedSettingsProps {
@@ -18,10 +12,10 @@ interface AdvancedSettingsProps {
   onImageQualityEnabledChange: (enabled: boolean) => void;
   imageQuality: number;
   onImageQualityChange: (quality: number) => void;
-  trimBorderEnabled: boolean;
-  onTrimBorderEnabledChange: (enabled: boolean) => void;
-  trimBorderMode: "transparency" | "white" | "both";
-  onTrimBorderModeChange: (mode: "transparency" | "white" | "both") => void;
+  trimImageEnabled: boolean;
+  onTrimImageEnabledChange: (enabled: boolean) => void;
+  trimImageMode: "transparency" | "white" | "both";
+  onTrimImageModeChange: (mode: "transparency" | "white" | "both") => void;
   resizeImageEnabled: boolean;
   onResizeImageEnabledChange: (enabled: boolean) => void;
   resizeImageWidth: number | null;
@@ -39,10 +33,10 @@ export function AdvancedSettings({
   onImageQualityEnabledChange,
   imageQuality,
   onImageQualityChange,
-  trimBorderEnabled,
-  onTrimBorderEnabledChange,
-  trimBorderMode,
-  onTrimBorderModeChange,
+  trimImageEnabled,
+  onTrimImageEnabledChange,
+  trimImageMode,
+  onTrimImageModeChange,
   resizeImageEnabled,
   onResizeImageEnabledChange,
   resizeImageWidth,
@@ -55,49 +49,45 @@ export function AdvancedSettings({
   onEvenDimensionsPaddingHeightChange,
 }: AdvancedSettingsProps) {
   return (
-    <Accordion type="single" collapsible className="w-full">
-      <AccordionItem value="advanced">
-        <AccordionTrigger className="text-base font-bold">
-          Advanced Settings
-        </AccordionTrigger>
-        <AccordionContent>
-          <div className="pt-4 space-y-4">
-            <ImageQualitySettings
-              imageQualityEnabled={imageQualityEnabled}
-              onImageQualityEnabledChange={onImageQualityEnabledChange}
-              imageQuality={imageQuality}
-              onImageQualityChange={onImageQualityChange}
-            />
-            <Separator />
-            <TrimBorder
-              trimBorderEnabled={trimBorderEnabled}
-              onTrimBorderEnabledChange={onTrimBorderEnabledChange}
-              trimBorderMode={trimBorderMode}
-              onTrimBorderModeChange={onTrimBorderModeChange}
-            />
-            <Separator />
-            <ResizeImageSettings
-              resizeImageEnabled={resizeImageEnabled}
-              onResizeImageEnabledChange={onResizeImageEnabledChange}
-              resizeImageWidth={resizeImageWidth}
-              onResizeImageWidthChange={onResizeImageWidthChange}
-            />
-            <Separator />
-            <DimensionPadding
-              evenDimensionsEnabled={evenDimensionsEnabled}
-              onEvenDimensionsEnabledChange={onEvenDimensionsEnabledChange}
-              evenDimensionsPaddingWidth={evenDimensionsPaddingWidth}
-              onEvenDimensionsPaddingWidthChange={
-                onEvenDimensionsPaddingWidthChange
-              }
-              evenDimensionsPaddingHeight={evenDimensionsPaddingHeight}
-              onEvenDimensionsPaddingHeightChange={
-                onEvenDimensionsPaddingHeightChange
-              }
-            />
-          </div>
-        </AccordionContent>
-      </AccordionItem>
-    </Accordion>
+    <>
+      <div className="text-base font-bold">
+        Advanced Settings
+      </div>
+        <div className="pt-4 space-y-4">
+          <ImageQualitySettings
+            imageQualityEnabled={imageQualityEnabled}
+            onImageQualityEnabledChange={onImageQualityEnabledChange}
+            imageQuality={imageQuality}
+            onImageQualityChange={onImageQualityChange}
+          />
+          <Separator />
+          <TrimImage
+            trimImageEnabled={trimImageEnabled}
+            onTrimImageEnabledChange={onTrimImageEnabledChange}
+            trimImageMode={trimImageMode}
+            onTrimImageModeChange={onTrimImageModeChange}
+          />
+          <Separator />
+          <ResizeImageSettings
+            resizeImageEnabled={resizeImageEnabled}
+            onResizeImageEnabledChange={onResizeImageEnabledChange}
+            resizeImageWidth={resizeImageWidth}
+            onResizeImageWidthChange={onResizeImageWidthChange}
+          />
+          <Separator />
+          <DimensionPadding
+            evenDimensionsEnabled={evenDimensionsEnabled}
+            onEvenDimensionsEnabledChange={onEvenDimensionsEnabledChange}
+            evenDimensionsPaddingWidth={evenDimensionsPaddingWidth}
+            onEvenDimensionsPaddingWidthChange={
+              onEvenDimensionsPaddingWidthChange
+            }
+            evenDimensionsPaddingHeight={evenDimensionsPaddingHeight}
+            onEvenDimensionsPaddingHeightChange={
+              onEvenDimensionsPaddingHeightChange
+            }
+          />
+        </div>
+      </>
   );
 }

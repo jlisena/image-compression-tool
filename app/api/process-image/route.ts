@@ -5,8 +5,8 @@ const processImage = async (
   originalImageBuffer: Buffer,
   originalFileType: string,
   imageQuality: number,
-  trimBorderEnabled: boolean,
-  trimBorderMode: "transparency" | "white" | "both",
+  trimImageEnabled: boolean,
+  trimImageMode: "transparency" | "white" | "both",
   resizeImageEnabled: boolean,
   resizeImageWidth: number | null,
   evenDimensionsEnabled: boolean,
@@ -17,14 +17,14 @@ const processImage = async (
   let processedImageMimeType = originalFileType;
 
   // Base transformations
-  if (trimBorderEnabled) {
-    if (trimBorderMode === "transparency" || trimBorderMode === "both") {
+  if (trimImageEnabled) {
+    if (trimImageMode === "transparency" || trimImageMode === "both") {
       pipeline = pipeline.trim();
     }
-    if (trimBorderMode === "white" || trimBorderMode === "both") {
+    if (trimImageMode === "white" || trimImageMode === "both") {
       // For "both" mode, we need to materialize after transparency trim
       // so the white trim operates on the result
-      if (trimBorderMode === "both") {
+      if (trimImageMode === "both") {
         const buffer = await pipeline.toBuffer();
         pipeline = sharp(buffer).trim({ background: "#ffffff" });
       } else {
@@ -96,9 +96,9 @@ export async function POST(req: Request) {
     const formData = await req.formData();
     const originalFile = formData.get("image") as File;
     const imageQuality = parseInt(formData.get("imageQuality") as string) || 75;
-    const trimBorderEnabled = formData.get("trimBorderEnabled") === "true";
-    const trimBorderMode =
-      (formData.get("trimBorderMode") as "transparency" | "white" | "both") ||
+    const trimImageEnabled = formData.get("trimImageEnabled") === "true";
+    const trimImageMode =
+      (formData.get("trimImageMode") as "transparency" | "white" | "both") ||
       "transparency";
     const resizeImageEnabled = formData.get("resizeImageEnabled") === "true";
     const resizeImageWidth = formData.get("resizeImageWidth")
@@ -128,8 +128,8 @@ export async function POST(req: Request) {
       originalImageBuffer,
       originalFileType,
       imageQuality,
-      trimBorderEnabled,
-      trimBorderMode,
+      trimImageEnabled,
+      trimImageMode,
       resizeImageEnabled,
       resizeImageWidth,
       evenDimensionsEnabled,
