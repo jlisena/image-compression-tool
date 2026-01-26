@@ -62,6 +62,14 @@ export function CompressionCard() {
     useLocalStorage<"left" | "right">("evenDimensionsPaddingWidth", "left");
   const [evenDimensionsPaddingHeight, setEvenDimensionsPaddingHeight] =
     useLocalStorage<"top" | "bottom">("evenDimensionsPaddingHeight", "bottom");
+  const [appendFilenameEnabled, setAppendFilenameEnabled] = useLocalStorage(
+    "appendFilenameEnabled",
+    false,
+  );
+  const [appendFilenameText, setAppendFilenameText] = useLocalStorage(
+    "appendFilenameText",
+    "",
+  );
   const {
     compressionFileResults,
     compressionErrors,
@@ -140,12 +148,20 @@ export function CompressionCard() {
             isCompressing={isCompressing}
             compressionFilesList={compressionFilesList}
             onRemoveFile={removeCompressionResult}
+            appendFilenameEnabled={appendFilenameEnabled}
+            appendFilenameText={appendFilenameText}
           />
 
           {/* Download All button */}
           <div className="flex justify-center my-6">
             <Button
-              onClick={() => downloadBatchAsZip(compressionFileResults)}
+              onClick={() =>
+                downloadBatchAsZip(
+                  compressionFileResults,
+                  appendFilenameEnabled,
+                  appendFilenameText,
+                )
+              }
               disabled={!allComplete}
               className="relative leading-none"
             >
@@ -200,6 +216,10 @@ export function CompressionCard() {
             onEvenDimensionsPaddingWidthChange={setEvenDimensionsPaddingWidth}
             evenDimensionsPaddingHeight={evenDimensionsPaddingHeight}
             onEvenDimensionsPaddingHeightChange={setEvenDimensionsPaddingHeight}
+            appendFilenameEnabled={appendFilenameEnabled}
+            onAppendFilenameEnabledChange={setAppendFilenameEnabled}
+            appendFilenameText={appendFilenameText}
+            onAppendFilenameTextChange={setAppendFilenameText}
           />
         </CardContent>
       </Card>

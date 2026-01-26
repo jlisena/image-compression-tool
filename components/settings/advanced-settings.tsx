@@ -6,6 +6,7 @@ import { ImageQualitySettings } from "@/components/settings/image-quality";
 import { ResizeImageSettings } from "@/components/settings/resize-image";
 import { TrimImage } from "@/components/settings/trim-image";
 import { DimensionPadding } from "@/components/settings/even-dimensions";
+import { AppendFilename } from "@/components/settings/append-filename";
 
 interface AdvancedSettingsProps {
   imageQualityEnabled: boolean;
@@ -32,6 +33,10 @@ interface AdvancedSettingsProps {
   onEvenDimensionsPaddingWidthChange: (position: "left" | "right") => void;
   evenDimensionsPaddingHeight: "top" | "bottom";
   onEvenDimensionsPaddingHeightChange: (position: "top" | "bottom") => void;
+  appendFilenameEnabled: boolean;
+  onAppendFilenameEnabledChange: (enabled: boolean) => void;
+  appendFilenameText: string;
+  onAppendFilenameTextChange: (text: string) => void;
 }
 
 export function AdvancedSettings({
@@ -59,6 +64,10 @@ export function AdvancedSettings({
   onEvenDimensionsPaddingWidthChange,
   evenDimensionsPaddingHeight,
   onEvenDimensionsPaddingHeightChange,
+  appendFilenameEnabled,
+  onAppendFilenameEnabledChange,
+  appendFilenameText,
+  onAppendFilenameTextChange,
 }: AdvancedSettingsProps) {
   return (
     <>
@@ -102,6 +111,13 @@ export function AdvancedSettings({
           onEvenDimensionsPaddingHeightChange={
             onEvenDimensionsPaddingHeightChange
           }
+        />
+        <Separator />
+        <AppendFilename
+          appendFilenameEnabled={appendFilenameEnabled}
+          onAppendFilenameEnabledChange={onAppendFilenameEnabledChange}
+          appendFilenameText={appendFilenameText}
+          onAppendFilenameTextChange={onAppendFilenameTextChange}
         />
       </div>
     </>

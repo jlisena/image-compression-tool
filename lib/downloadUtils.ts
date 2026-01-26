@@ -43,7 +43,9 @@ function getUniqueFileName(name: string, existingNames: Set<string>): string {
  * Download all compressed images as a ZIP file
  */
 export async function downloadBatchAsZip(
-  results: CompressionResult[]
+  results: CompressionResult[],
+  appendFilenameEnabled: boolean = false,
+  appendFilenameText: string = ""
 ): Promise<void> {
   const JSZip = (await import("jszip")).default;
   const zip = new JSZip();
@@ -51,7 +53,12 @@ export async function downloadBatchAsZip(
 
   results.forEach((result) => {
     if (result.compressedFileBlob) {
-      const originalName = result.originalFile.name;
+      let originalName = result.originalFile.name;
+      if (appendFilenameEnabled && appendFilenameText.trim()) {
+        const baseName = getFileNameWithoutExt(originalName);
+        const ext = getFileExtension(originalName);
+        originalName = `${baseName}${appendFilenameText}.${ext}`;
+      }
       const uniqueName = getUniqueFileName(originalName, usedNames);
       usedNames.add(uniqueName);
       zip.file(uniqueName, result.compressedFileBlob);

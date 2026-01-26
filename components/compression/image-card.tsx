@@ -11,15 +11,22 @@ import {
 } from "@/components/ui/tooltip";
 import { usePreviewUrl } from "@/hooks/usePreviewUrl";
 import { downloadCompressedImage } from "@/lib/downloadUtils";
-import { getFileExtension } from "@/lib/fileUtils";
+import { getFileExtension, getFileNameWithoutExt } from "@/lib/fileUtils";
 import type { FileData } from "@/components/compression/compression-card";
 
 interface ImageCardProps {
   fileData: FileData;
   onRemove: (fileId: string) => void;
+  appendFilenameEnabled: boolean;
+  appendFilenameText: string;
 }
 
-export function ImageCard({ fileData, onRemove }: ImageCardProps) {
+export function ImageCard({
+  fileData,
+  onRemove,
+  appendFilenameEnabled,
+  appendFilenameText,
+}: ImageCardProps) {
   const previewImageUrl = usePreviewUrl(fileData.originalFile);
   const fileExtension = getFileExtension(fileData.originalFile.name);
   const displayFileName = fileExtension
@@ -29,10 +36,14 @@ export function ImageCard({ fileData, onRemove }: ImageCardProps) {
   const handleDownloadCompressedFile = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (fileData.compressedFileBlob) {
-      downloadCompressedImage(
-        fileData.compressedFileBlob,
-        fileData.originalFile.name,
-      );
+      const originalName = fileData.originalFile.name;
+      let downloadName = originalName;
+      if (appendFilenameEnabled && appendFilenameText.trim()) {
+        const baseName = getFileNameWithoutExt(originalName);
+        const ext = getFileExtension(originalName);
+        downloadName = `${baseName}${appendFilenameText}.${ext}`;
+      }
+      downloadCompressedImage(fileData.compressedFileBlob, downloadName);
     }
   };
 

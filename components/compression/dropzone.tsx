@@ -11,9 +11,18 @@ interface DropzoneProps {
   isCompressing: boolean;
   compressionFilesList: FileData[];
   onRemoveFile: (fileId: string) => void;
+  appendFilenameEnabled: boolean;
+  appendFilenameText: string;
 }
 
-export function Dropzone({ onDrop, isCompressing, compressionFilesList, onRemoveFile }: DropzoneProps) {
+export function Dropzone({
+  onDrop,
+  isCompressing,
+  compressionFilesList,
+  onRemoveFile,
+  appendFilenameEnabled,
+  appendFilenameText,
+}: DropzoneProps) {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     noClick: true,
@@ -28,7 +37,7 @@ export function Dropzone({ onDrop, isCompressing, compressionFilesList, onRemove
         isDragActive
           ? "border-primary bg-primary/5"
           : "border-muted-foreground/25",
-        compressionFilesList.length === 0 && "flex items-center justify-center"
+        compressionFilesList.length === 0 && "flex items-center justify-center",
       )}
     >
       <input {...getInputProps()} id="file-input" />
@@ -38,7 +47,13 @@ export function Dropzone({ onDrop, isCompressing, compressionFilesList, onRemove
       ) : (
         <div className="p-3 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
           {compressionFilesList.map((fileData) => (
-            <ImageCard key={fileData.fileId} fileData={fileData} onRemove={onRemoveFile} />
+            <ImageCard
+              key={fileData.fileId}
+              fileData={fileData}
+              onRemove={onRemoveFile}
+              appendFilenameEnabled={appendFilenameEnabled}
+              appendFilenameText={appendFilenameText}
+            />
           ))}
         </div>
       )}
