@@ -31,7 +31,8 @@ const processImage = async (
   // Base transformations
   if (trimImageEnabled) {
     if (trimImageMode === "transparency" || trimImageMode === "both") {
-      pipeline = pipeline.trim();
+      // Trim with alpha channel only - removes transparent pixels
+      pipeline = pipeline.trim({ background: { r: 0, g: 0, b: 0, alpha: 0 } });
       logs.push({
         operation: "Trim Image",
         details: "Removed transparent edges",
