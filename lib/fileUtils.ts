@@ -51,16 +51,12 @@ export const ALLOWED_TYPES = [
  */
 export function validateFile(
   file: File,
-  evenDimensions: boolean = false
 ): string | null {
   if (!ALLOWED_TYPES.includes(file.type)) {
     return `${file.name}: Invalid file type. Only JPEG, PNG, WebP, and AVIF are allowed.`;
   }
   if (file.size > MAX_FILE_SIZE) {
     return `${file.name}: File size exceeds 5MB limit.`;
-  }
-  if (evenDimensions && file.type === "image/jpeg") {
-    return `${file.name}: Even dimensions padding is only available for PNG, WebP, and AVIF formats.`;
   }
   return null;
 }

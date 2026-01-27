@@ -18,6 +18,7 @@ const processImage = async (
   resizeImageHeight: number | null,
   resizeImagePercentage: number | null,
   evenDimensionsEnabled: boolean,
+  evenDimensionsMode: "add" | "remove",
   evenDimensionsPaddingWidth: "left" | "right",
   evenDimensionsPaddingHeight: "top" | "bottom",
   appendFilenameEnabled: boolean,
@@ -125,48 +126,90 @@ const processImage = async (
     });
   }
 
-  // Apply even dimensions padding if enabled (PNG, WebP, AVIF only)
-  if (
-    evenDimensionsEnabled &&
-    (originalFileType === "image/png" ||
-      originalFileType === "image/webp" ||
-      originalFileType === "image/avif")
-  ) {
+  // Apply even dimensions (add padding or crop) if enabled (all formats supported)
+  if (evenDimensionsEnabled) {
     const metadata = await pipeline.metadata();
     const width = metadata.width || 0;
     const height = metadata.height || 0;
 
     if (width % 2 !== 0 || height % 2 !== 0) {
-      const padLeft =
-        evenDimensionsPaddingWidth === "left" && width % 2 !== 0 ? 1 : 0;
-      const padRight =
-        evenDimensionsPaddingWidth === "right" && width % 2 !== 0 ? 1 : 0;
-      const padTop =
-        evenDimensionsPaddingHeight === "top" && height % 2 !== 0 ? 1 : 0;
-      const padBottom =
-        evenDimensionsPaddingHeight === "bottom" && height % 2 !== 0 ? 1 : 0;
+      if (evenDimensionsMode === "add") {
+        // Add mode: extend image with padding
+        const padLeft =
+          evenDimensionsPaddingWidth === "left" && width % 2 !== 0 ? 1 : 0;
+        const padRight =
+          evenDimensionsPaddingWidth === "right" && width % 2 !== 0 ? 1 : 0;
+        const padTop =
+          evenDimensionsPaddingHeight === "top" && height % 2 !== 0 ? 1 : 0;
+        const padBottom =
+          evenDimensionsPaddingHeight === "bottom" && height % 2 !== 0 ? 1 : 0;
 
-      pipeline = pipeline.extend({
-        left: padLeft,
-        right: padRight,
-        top: padTop,
-        bottom: padBottom,
-        background: { r: 0, g: 0, b: 0, alpha: 0 }, // transparent
-      });
-      
-      const paddingDesc = [];
-      if (padLeft || padRight) {
-        const side = padLeft ? "left" : "right";
-        paddingDesc.push(`1px ${side}`);
+        // Determine background color based on format
+        let backgroundColor;
+        if (originalFileType === "image/jpeg") {
+          // JPEG: use white padding
+          backgroundColor = { r: 255, g: 255, b: 255 };
+        } else {
+          // PNG, WebP, AVIF: use transparent padding
+          backgroundColor = { r: 0, g: 0, b: 0, alpha: 0 };
+        }
+
+        pipeline = pipeline.extend({
+          left: padLeft,
+          right: padRight,
+          top: padTop,
+          bottom: padBottom,
+          background: backgroundColor,
+        });
+
+        const paddingDesc = [];
+        if (padLeft || padRight) {
+          const side = padLeft ? "left" : "right";
+          paddingDesc.push(`1px ${side}`);
+        }
+        if (padTop || padBottom) {
+          const side = padTop ? "top" : "bottom";
+          paddingDesc.push(`1px ${side}`);
+        }
+        logs.push({
+          operation: "Even Dimensions",
+          details: `Added padding (${paddingDesc.join(", ")})`,
+        });
+      } else {
+        // Remove mode: crop pixels from image
+        const cropLeft =
+          evenDimensionsPaddingWidth === "left" && width % 2 !== 0 ? 1 : 0;
+        const cropRight =
+          evenDimensionsPaddingWidth === "right" && width % 2 !== 0 ? 1 : 0;
+        const cropTop =
+          evenDimensionsPaddingHeight === "top" && height % 2 !== 0 ? 1 : 0;
+        const cropBottom =
+          evenDimensionsPaddingHeight === "bottom" && height % 2 !== 0 ? 1 : 0;
+
+        const newWidth = width - cropLeft - cropRight;
+        const newHeight = height - cropTop - cropBottom;
+
+        pipeline = pipeline.extract({
+          left: cropLeft,
+          top: cropTop,
+          width: newWidth,
+          height: newHeight,
+        });
+
+        const cropDesc = [];
+        if (cropLeft || cropRight) {
+          const side = cropLeft ? "left" : "right";
+          cropDesc.push(`1px ${side}`);
+        }
+        if (cropTop || cropBottom) {
+          const side = cropTop ? "top" : "bottom";
+          cropDesc.push(`1px ${side}`);
+        }
+        logs.push({
+          operation: "Even Dimensions",
+          details: `Removed pixels (${cropDesc.join(", ")})`,
+        });
       }
-      if (padTop || padBottom) {
-        const side = padTop ? "top" : "bottom";
-        paddingDesc.push(`1px ${side}`);
-      }
-      logs.push({
-        operation: "Even Dimensions",
-        details: `Added padding (${paddingDesc.join(", ")})`,
-      });
     }
   }
   
@@ -203,6 +246,8 @@ export async function POST(req: Request) {
       : null;
     const evenDimensionsEnabled =
       formData.get("evenDimensionsEnabled") === "true";
+    const evenDimensionsMode =
+      (formData.get("evenDimensionsMode") as "add" | "remove") || "add";
     const evenDimensionsPaddingWidth =
       (formData.get("evenDimensionsPaddingWidth") as "left" | "right") ||
       "left";
@@ -235,6 +280,7 @@ export async function POST(req: Request) {
       resizeImageHeight,
       resizeImagePercentage,
       evenDimensionsEnabled,
+      evenDimensionsMode,
       evenDimensionsPaddingWidth,
       evenDimensionsPaddingHeight,
       appendFilenameEnabled,

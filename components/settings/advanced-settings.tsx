@@ -33,6 +33,8 @@ interface AdvancedSettingsProps {
   onResizeImagePercentageChange: (percentage: number | null) => void;
   evenDimensionsEnabled: boolean;
   onEvenDimensionsEnabledChange: (enabled: boolean) => void;
+  evenDimensionsMode: "add" | "remove";
+  onEvenDimensionsModeChange: (mode: "add" | "remove") => void;
   evenDimensionsPaddingWidth: "left" | "right";
   onEvenDimensionsPaddingWidthChange: (position: "left" | "right") => void;
   evenDimensionsPaddingHeight: "top" | "bottom";
@@ -65,6 +67,8 @@ export function AdvancedSettings({
   onResizeImagePercentageChange,
   evenDimensionsEnabled,
   onEvenDimensionsEnabledChange,
+  evenDimensionsMode,
+  onEvenDimensionsModeChange,
   evenDimensionsPaddingWidth,
   onEvenDimensionsPaddingWidthChange,
   evenDimensionsPaddingHeight,
@@ -109,6 +113,8 @@ export function AdvancedSettings({
         <DimensionPadding
           evenDimensionsEnabled={evenDimensionsEnabled}
           onEvenDimensionsEnabledChange={onEvenDimensionsEnabledChange}
+          evenDimensionsMode={evenDimensionsMode}
+          onEvenDimensionsModeChange={onEvenDimensionsModeChange}
           evenDimensionsPaddingWidth={evenDimensionsPaddingWidth}
           onEvenDimensionsPaddingWidthChange={
             onEvenDimensionsPaddingWidthChange

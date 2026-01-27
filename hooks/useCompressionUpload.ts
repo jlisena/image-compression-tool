@@ -29,6 +29,7 @@ export function useCompressionUpload(
   resizeImageHeight: number | null = null,
   resizeImagePercentage: number | null = null,
   evenDimensionsEnabled: boolean = false,
+  evenDimensionsMode: "add" | "remove" = "add",
   evenDimensionsPaddingWidth: "left" | "right" = "left",
   evenDimensionsPaddingHeight: "top" | "bottom" = "bottom",
   appendFilenameEnabled: boolean = false,
@@ -47,7 +48,7 @@ export function useCompressionUpload(
     const validFiles: File[] = [];
 
     acceptedFiles.forEach((file) => {
-      const error = validateFile(file, evenDimensionsEnabled);
+      const error = validateFile(file);
       if (error) {
         validationErrors.push(error);
       } else {
@@ -98,6 +99,10 @@ export function useCompressionUpload(
           formData.append(
             "evenDimensionsEnabled",
             evenDimensionsEnabled.toString()
+          );
+          formData.append(
+            "evenDimensionsMode",
+            evenDimensionsMode
           );
           formData.append(
             "evenDimensionsPaddingWidth",
