@@ -80,8 +80,12 @@ const processImage = async (
       width = resizeImageWidth || undefined;
       height = resizeImageHeight || undefined;
       const dims = [];
-      if (width) dims.push(`${width}px width`);
-      if (height) dims.push(`${height}px height`);
+      dims.push(
+        width ? `${width}px width` : `auto width`
+      );
+      dims.push(
+        height ? `${height}px height` : `auto height`
+      );
       resizeImageDetails = `Resized to ${dims.join(" and ")}`;
     }
 
