@@ -64,7 +64,7 @@ export function ImageQualitySettings({
         >
           Image Quality
         </label>
-        <InfoTooltip content="Reduce file size by lowering quality. Lower values result in smaller files but reduced visual quality. Best for web and social media." />
+        <InfoTooltip content="Reduce file size by lowering quality. Lower values result in smaller files, but reduced visual quality." />
       </div>
       {imageQualityEnabled && (
         <div className="pl-11 mt-3 p-3 bg-muted/60 rounded-md">

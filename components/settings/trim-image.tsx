@@ -38,7 +38,7 @@ export function TrimImage({
         >
           Trim Image
         </label>
-        <InfoTooltip content="Remove unnecessary transparent or white borders around your image. Useful for cleaning up exported graphics and screenshots." />
+        <InfoTooltip content="Remove unnecessary transparent or white borders around your image. Useful for cleaning up exported graphics." />
       </div>
       {trimImageEnabled && (
         <div className="mt-3 pl-11 p-3 bg-muted/60 rounded-md">
