@@ -89,6 +89,8 @@ export function CompressionCard() {
     evenDimensionsEnabled,
     evenDimensionsPaddingWidth,
     evenDimensionsPaddingHeight,
+    appendFilenameEnabled,
+    appendFilenameText,
   );
 
   const compressionFilesList: FileData[] = compressionFileResults.map(
@@ -108,6 +110,14 @@ export function CompressionCard() {
       isCompressing: result.isCompressing,
     }),
   );
+
+  const compressionLogs = compressionFileResults
+    .filter((result) => result.logs && result.logs.length > 0)
+    .map((result) => ({
+      fileId: result.fileId,
+      fileName: result.originalFile.name,
+      logs: result.logs || [],
+    }));
 
   const completedCount = compressionFileResults.filter(
     (r) => r.compressedFileBlob,
@@ -220,6 +230,7 @@ export function CompressionCard() {
             onAppendFilenameEnabledChange={setAppendFilenameEnabled}
             appendFilenameText={appendFilenameText}
             onAppendFilenameTextChange={setAppendFilenameText}
+            compressionLogs={compressionLogs}
           />
         </CardContent>
       </Card>

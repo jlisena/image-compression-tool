@@ -7,6 +7,10 @@ import { ResizeImageSettings } from "@/components/settings/resize-image";
 import { TrimImage } from "@/components/settings/trim-image";
 import { DimensionPadding } from "@/components/settings/even-dimensions";
 import { AppendFilename } from "@/components/settings/append-filename";
+import {
+  CompressionLogs,
+  type CompressionLog,
+} from "@/components/settings/compression-logs";
 
 interface AdvancedSettingsProps {
   imageQualityEnabled: boolean;
@@ -37,6 +41,7 @@ interface AdvancedSettingsProps {
   onAppendFilenameEnabledChange: (enabled: boolean) => void;
   appendFilenameText: string;
   onAppendFilenameTextChange: (text: string) => void;
+  compressionLogs?: CompressionLog[];
 }
 
 export function AdvancedSettings({
@@ -68,6 +73,7 @@ export function AdvancedSettings({
   onAppendFilenameEnabledChange,
   appendFilenameText,
   onAppendFilenameTextChange,
+  compressionLogs = [],
 }: AdvancedSettingsProps) {
   return (
     <>
@@ -119,6 +125,8 @@ export function AdvancedSettings({
           appendFilenameText={appendFilenameText}
           onAppendFilenameTextChange={onAppendFilenameTextChange}
         />
+        <Separator />
+        <CompressionLogs logs={compressionLogs} />
       </div>
     </>
   );

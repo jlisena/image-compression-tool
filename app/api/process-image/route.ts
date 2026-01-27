@@ -1,6 +1,11 @@
 import { NextResponse } from "next/server";
 import sharp from "sharp";
 
+interface LogEntry {
+  operation: string;
+  details: string;
+}
+
 const processImage = async (
   originalImageBuffer: Buffer,
   originalFileType: string,
@@ -14,15 +19,22 @@ const processImage = async (
   resizeImagePercentage: number | null,
   evenDimensionsEnabled: boolean,
   evenDimensionsPaddingWidth: "left" | "right",
-  evenDimensionsPaddingHeight: "top" | "bottom"
+  evenDimensionsPaddingHeight: "top" | "bottom",
+  appendFilenameEnabled: boolean,
+  appendFilenameText: string
 ) => {
   let pipeline = sharp(originalImageBuffer).rotate();
   let processedImageMimeType = originalFileType;
+  const logs: LogEntry[] = [];
 
   // Base transformations
   if (trimImageEnabled) {
     if (trimImageMode === "transparency" || trimImageMode === "both") {
       pipeline = pipeline.trim();
+      logs.push({
+        operation: "Trim Image",
+        details: "Removed transparent edges",
+      });
     }
     if (trimImageMode === "white" || trimImageMode === "both") {
       // For "both" mode, we need to materialize after transparency trim
@@ -30,8 +42,20 @@ const processImage = async (
       if (trimImageMode === "both") {
         const buffer = await pipeline.toBuffer();
         pipeline = sharp(buffer).trim({ background: "#ffffff" });
+        if (!logs.some((l) => l.operation === "Trim Image")) {
+          logs.push({
+            operation: "Trim Image",
+            details: "Removed white edges",
+          });
+        } else {
+          logs[logs.length - 1].details = "Removed transparent and white edges";
+        }
       } else {
         pipeline = pipeline.trim({ background: "#ffffff" });
+        logs.push({
+          operation: "Trim Image",
+          details: "Removed white edges",
+        });
       }
     }
   }
@@ -39,6 +63,7 @@ const processImage = async (
   if (resizeImageEnabled) {
     let width: number | undefined;
     let height: number | undefined;
+    let resizeImageDetails = "";
 
     if (resizeImageMode === "percentage" && resizeImagePercentage) {
       // Calculate dimensions based on percentage
@@ -48,9 +73,14 @@ const processImage = async (
       const factor = resizeImagePercentage / 100;
       width = Math.round(originalWidth * factor);
       height = Math.round(originalHeight * factor);
+      resizeImageDetails = `Scaled to ${resizeImagePercentage}% (${width}px width and ${height}px height)`;
     } else if (resizeImageMode === "manual" && (resizeImageWidth || resizeImageHeight)) {
       width = resizeImageWidth || undefined;
       height = resizeImageHeight || undefined;
+      const dims = [];
+      if (width) dims.push(`${width}px width`);
+      if (height) dims.push(`${height}px height`);
+      resizeImageDetails = `Resized to ${dims.join(" and ")}`;
     }
 
     if (width || height) {
@@ -65,6 +95,12 @@ const processImage = async (
       // Materialize the resize so even dimensions check gets the correct dimensions
       const resizedBuffer = await pipeline.toBuffer({ resolveWithObject: false }) as Buffer;
       pipeline = sharp(resizedBuffer);
+      if (resizeImageDetails) {
+        logs.push({
+          operation: "Resize Image",
+          details: resizeImageDetails,
+        });
+      }
     }
   }
 
@@ -79,6 +115,14 @@ const processImage = async (
     // Default to JPEG for other formats
     pipeline = pipeline.jpeg({ quality: imageQuality, progressive: true });
     processedImageMimeType = "image/jpeg";
+  }
+  
+  // Log quality if not default
+  if (imageQuality !== 75) {
+    logs.push({
+      operation: "Image Quality",
+      details: `Quality set to ${imageQuality}%`,
+    });
   }
 
   // Apply even dimensions padding if enabled (PNG, WebP, AVIF only)
@@ -109,10 +153,32 @@ const processImage = async (
         bottom: padBottom,
         background: { r: 0, g: 0, b: 0, alpha: 0 }, // transparent
       });
+      
+      const paddingDesc = [];
+      if (padLeft || padRight) {
+        const side = padLeft ? "left" : "right";
+        paddingDesc.push(`1px ${side}`);
+      }
+      if (padTop || padBottom) {
+        const side = padTop ? "top" : "bottom";
+        paddingDesc.push(`1px ${side}`);
+      }
+      logs.push({
+        operation: "Even Dimensions",
+        details: `Added padding (${paddingDesc.join(", ")})`,
+      });
     }
   }
+  
+  // Log filename append if enabled
+  if (appendFilenameEnabled && appendFilenameText) {
+    logs.push({
+      operation: "Append Filename",
+      details: `Added suffix "${appendFilenameText}"`,
+    });
+  }
 
-  return { pipeline, processedImageMimeType };
+  return { pipeline, processedImageMimeType, logs };
 };
 
 export async function POST(req: Request) {
@@ -143,6 +209,8 @@ export async function POST(req: Request) {
     const evenDimensionsPaddingHeight =
       (formData.get("evenDimensionsPaddingHeight") as "top" | "bottom") ||
       "bottom";
+    const appendFilenameEnabled = formData.get("appendFilenameEnabled") === "true";
+    const appendFilenameText = (formData.get("appendFilenameText") as string) || "";
 
     if (!originalFile) {
       return NextResponse.json(
@@ -155,7 +223,7 @@ export async function POST(req: Request) {
     const originalFileType = originalFile.type;
 
     // Process image with all transformations in one call
-    const { pipeline, processedImageMimeType } = await processImage(
+    const { pipeline, processedImageMimeType, logs } = await processImage(
       originalImageBuffer,
       originalFileType,
       imageQuality,
@@ -168,7 +236,9 @@ export async function POST(req: Request) {
       resizeImagePercentage,
       evenDimensionsEnabled,
       evenDimensionsPaddingWidth,
-      evenDimensionsPaddingHeight
+      evenDimensionsPaddingHeight,
+      appendFilenameEnabled,
+      appendFilenameText
     );
 
     const compressedBuffer = await pipeline.toBuffer();
@@ -180,6 +250,7 @@ export async function POST(req: Request) {
         headers: {
           "Content-Type": processedImageMimeType,
           "Content-Length": compressedBuffer.length.toString(),
+          "X-Compression-Logs": JSON.stringify(logs),
         },
       }
     );

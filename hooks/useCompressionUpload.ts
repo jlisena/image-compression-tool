@@ -3,6 +3,11 @@
 import React from "react";
 import { validateFile } from "@/lib/fileUtils";
 
+export interface LogEntry {
+  operation: string;
+  details: string;
+}
+
 export interface CompressionResult {
   fileId: string;
   originalFile: File;
@@ -11,6 +16,7 @@ export interface CompressionResult {
   compressedFileSize?: number;
   compressedRatio?: number;
   isCompressing?: boolean;
+  logs?: LogEntry[];
 }
 
 export function useCompressionUpload(
@@ -24,7 +30,9 @@ export function useCompressionUpload(
   resizeImagePercentage: number | null = null,
   evenDimensionsEnabled: boolean = false,
   evenDimensionsPaddingWidth: "left" | "right" = "left",
-  evenDimensionsPaddingHeight: "top" | "bottom" = "bottom"
+  evenDimensionsPaddingHeight: "top" | "bottom" = "bottom",
+  appendFilenameEnabled: boolean = false,
+  appendFilenameText: string = ""
 ) {
   const [compressionFileResults, setCompressionFileResults] = React.useState<
     CompressionResult[]
@@ -99,6 +107,11 @@ export function useCompressionUpload(
             "evenDimensionsPaddingHeight",
             evenDimensionsPaddingHeight
           );
+          formData.append(
+            "appendFilenameEnabled",
+            appendFilenameEnabled.toString()
+          );
+          formData.append("appendFilenameText", appendFilenameText);
 
           const response = await fetch("/api/process-image", {
             method: "POST",
@@ -117,6 +130,17 @@ export function useCompressionUpload(
             100
           ).toFixed(2);
 
+          // Extract logs from response headers
+          const logsHeader = response.headers.get("X-Compression-Logs");
+          let logs: LogEntry[] = [];
+          if (logsHeader) {
+            try {
+              logs = JSON.parse(logsHeader);
+            } catch (e) {
+              console.error("Failed to parse logs header:", e);
+            }
+          }
+
           // Update state for this specific file as soon as it completes
           setCompressionFileResults((prev) =>
             prev.map((result) =>
@@ -128,6 +152,7 @@ export function useCompressionUpload(
                     compressedFileSize,
                     compressedRatio: parseFloat(compressedRatio),
                     isCompressing: false,
+                    logs,
                   }
                 : result
             )
