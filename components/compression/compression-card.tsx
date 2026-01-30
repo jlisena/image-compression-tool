@@ -191,7 +191,7 @@ export function CompressionCard() {
 
           {/* Error alert */}
           {compressionErrors.length > 0 && (
-            <Alert variant="destructive" className="mt-4">
+            <Alert variant="destructive" className="my-4">
               <AlertCircle className="h-4 w-4" />
               <AlertTitle>Error</AlertTitle>
               <AlertDescription>
