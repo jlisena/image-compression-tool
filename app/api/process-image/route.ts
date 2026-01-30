@@ -30,13 +30,10 @@ const processImage = async (
 
   // Base transformations
   if (trimImageEnabled) {
+    const beforeTrim = await pipeline.metadata();
     if (trimImageMode === "transparency" || trimImageMode === "both") {
       // Trim with alpha channel only - removes transparent pixels
       pipeline = pipeline.trim({ background: { r: 0, g: 0, b: 0, alpha: 0 } });
-      logs.push({
-        operation: "Trim Image",
-        details: "Removed transparent edges",
-      });
     }
     if (trimImageMode === "white" || trimImageMode === "both") {
       // For "both" mode, we need to materialize after transparency trim
@@ -44,21 +41,25 @@ const processImage = async (
       if (trimImageMode === "both") {
         const buffer = await pipeline.toBuffer();
         pipeline = sharp(buffer).trim({ background: "#ffffff" });
-        if (!logs.some((l) => l.operation === "Trim Image")) {
-          logs.push({
-            operation: "Trim Image",
-            details: "Removed white edges",
-          });
-        } else {
-          logs[logs.length - 1].details = "Removed transparent and white edges";
-        }
       } else {
         pipeline = pipeline.trim({ background: "#ffffff" });
-        logs.push({
-          operation: "Trim Image",
-          details: "Removed white edges",
-        });
       }
+    }
+    const { data, info } = await pipeline.toBuffer({ resolveWithObject: true });
+    pipeline = sharp(data);
+    if (
+        beforeTrim.width !== info.width ||
+        beforeTrim.height !== info.height
+    ) {
+      logs.push({
+        operation: "Trim Image",
+        details:
+          trimImageMode === "both"
+            ? "Removed transparent and white edges"
+            : trimImageMode === "transparency"
+            ? "Removed transparent edges"
+            : "Removed white edges",
+      });
     }
   }
 
