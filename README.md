@@ -16,7 +16,7 @@ A web-based image compression tool for optimizing images at scale with flexible 
 
 ## Tech Stack
 
-- **Framework:** Next.js 15 (App Router, Turbopack)
+- **Framework:** Next.js 16 (App Router, Turbopack)
 - **Frontend:** React 19, TypeScript
 - **Image Processing:** Sharp
 - **Styling:** Tailwind CSS 4, PostCSS
