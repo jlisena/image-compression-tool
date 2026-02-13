@@ -57,7 +57,7 @@ export function validateFile(
     return `${file.name}: Invalid file type. Only JPEG, PNG, WebP, AVIF, and static GIF are allowed.`;
   }
   if (file.size > MAX_FILE_SIZE) {
-    return `${file.name}: File size exceeds 5MB limit.`;
+    return `${file.name}: File size exceeds 50MB limit.`;
   }
   return null;
 }
