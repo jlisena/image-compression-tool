@@ -144,7 +144,7 @@ export function ResizeImageSettings({
         >
           Resize Image
         </label>
-        <InfoTooltip content="Scale your image up or down. Manual mode: enter one dimension to auto-set the other, or enter both. Percentage mode: scale proportionally." />
+        <InfoTooltip content="Scale your image up or down. Manual mode: enter one dimension (pixels) to auto-set the other, or enter both. Percentage mode: scale proportionally." />
       </div>
       {resizeImageEnabled && (
         <div className="pl-11 mt-3 p-3 bg-muted/60 rounded-md">
