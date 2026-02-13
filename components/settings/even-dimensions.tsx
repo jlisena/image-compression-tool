@@ -47,7 +47,7 @@ export function DimensionPadding({
         >
           Even File Dimensions
         </label>
-        <InfoTooltip content="Ensures image dimensions are even numbers (divisible by 2). For add mode: adds 1px transparent padding (PNG/WebP/AVIF) or white padding (JPEG). For remove mode: removes  1px padding from the specified edges." />
+        <InfoTooltip content="Ensures image dimensions are even numbers (divisible by 2). For add mode: adds 1px transparent padding (PNG/WebP/AVIF/static GIF) or white padding (JPEG). For remove mode: removes  1px padding from the specified edges." />
       </div>
       {evenDimensionsEnabled && (
         <div className="space-y-3 mt-3 pl-11 p-3 bg-muted/60 rounded-md">
