@@ -41,6 +41,7 @@ export const ALLOWED_TYPES = [
   "image/png",
   "image/webp",
   "image/avif",
+  "image/gif",
 ];
 
 /**
@@ -53,7 +54,7 @@ export function validateFile(
   file: File,
 ): string | null {
   if (!ALLOWED_TYPES.includes(file.type)) {
-    return `${file.name}: Invalid file type. Only JPEG, PNG, WebP, and AVIF are allowed.`;
+    return `${file.name}: Invalid file type. Only JPEG, PNG, WebP, AVIF, and GIF are allowed.`;
   }
   if (file.size > MAX_FILE_SIZE) {
     return `${file.name}: File size exceeds 5MB limit.`;

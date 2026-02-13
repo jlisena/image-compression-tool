@@ -4,7 +4,7 @@ A web-based image compression tool for optimizing images at scale with flexible 
 
 ## Features
 
-- Support for multiple image formats (JPEG, PNG, WebP, AVIF)
+- Support for multiple image formats (JPEG, PNG, WebP, AVIF, GIF)
 - Adjustable image quality slider
 - Trim transparent or solid white edges
 - Resize images by width, height, or percentage (auto aspect ratio)

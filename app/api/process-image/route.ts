@@ -118,6 +118,9 @@ const processImage = async (
     pipeline = pipeline.webp({ quality: imageQuality });
   } else if (originalFileType === "image/avif") {
     pipeline = pipeline.avif({ quality: imageQuality });
+  } else if (originalFileType === "image/gif") {
+    // GIF is lossless, so quality parameter is not applicable
+    pipeline = pipeline.gif();
   } else {
     // Default to JPEG for other formats
     pipeline = pipeline.jpeg({ quality: imageQuality, progressive: true });
@@ -156,7 +159,7 @@ const processImage = async (
           // JPEG: use white padding
           backgroundColor = { r: 255, g: 255, b: 255 };
         } else {
-          // PNG, WebP, AVIF: use transparent padding
+          // PNG, WebP, AVIF, GIF: use transparent padding
           backgroundColor = { r: 0, g: 0, b: 0, alpha: 0 };
         }
 
