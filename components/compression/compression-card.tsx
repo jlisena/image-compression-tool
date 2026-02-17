@@ -4,11 +4,13 @@ import { Upload, X, Download, AlertCircle } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { formatFileSize } from "@/lib/fileUtils";
 import { AdvancedSettings } from "@/components/settings/advanced-settings";
 import { Dropzone } from "@/components/compression/dropzone";
 import { useCompressionUpload } from "@/hooks/useCompressionUpload";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
+import { useIsMounted } from "@/hooks/useIsMounted";
 import { getFileNameWithoutExt } from "@/lib/fileUtils";
 import { downloadBatchAsZip } from "@/lib/downloadUtils";
 
@@ -25,6 +27,8 @@ export interface FileData {
 }
 
 export function CompressionCard() {
+  const isMounted = useIsMounted();
+
   const [advancedSettingsEnabled, setAdvancedSettingsEnabled] = useLocalStorage(
     "advancedSettingsEnabled",
     true,
@@ -155,6 +159,19 @@ export function CompressionCard() {
     <div className="px-4 sm:px-6 lg:px-8">
       <Card className="mx-auto max-w-3xl">
         <CardContent className="p-6">
+          {!isMounted ? (
+            <div className="space-y-4">
+              <div className="flex gap-3 justify-center">
+                <Skeleton className="h-10 w-24" />
+                <Skeleton className="h-10 w-24" />
+              </div>
+              <Skeleton className="h-32 w-full" />
+              <div className="flex justify-center">
+                <Skeleton className="h-10 w-32" />
+              </div>
+            </div>
+          ) : (
+            <>
           {/* Top action buttons */}
           <div className="flex justify-center gap-3 mb-6">
             <Button
@@ -261,6 +278,8 @@ export function CompressionCard() {
             onAppendFilenameTextChange={setAppendFilenameText}
             compressionLogs={compressionLogs}
           />
+            </>
+          )}
         </CardContent>
       </Card>
     </div>

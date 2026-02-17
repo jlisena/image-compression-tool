@@ -13,7 +13,7 @@ export function useLocalStorage<T>(
   initialValue: T
 ): [T, (value: T | ((val: T) => T)) => void] {
   const [storedValue, setStoredValue] = useState<T>(initialValue);
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
   // Load from localStorage on mount
   useEffect(() => {
@@ -25,7 +25,7 @@ export function useLocalStorage<T>(
     } catch (error) {
       console.warn(`Error reading localStorage key "${key}":`, error);
     }
-    setIsLoaded(true);
+    setIsMounted(true);
   }, [key]);
 
   // Save to localStorage whenever value changes
@@ -34,7 +34,7 @@ export function useLocalStorage<T>(
       const valueToStore =
         value instanceof Function ? value(storedValue) : value;
       setStoredValue(valueToStore);
-      if (isLoaded) {
+      if (isMounted) {
         window.localStorage.setItem(key, JSON.stringify(valueToStore));
       }
     } catch (error) {
