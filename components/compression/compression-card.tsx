@@ -1,7 +1,6 @@
 "use client";
 
 import { Upload, X, Download, AlertCircle } from "lucide-react";
-import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -26,6 +25,10 @@ export interface FileData {
 }
 
 export function CompressionCard() {
+  const [advancedSettingsEnabled, setAdvancedSettingsEnabled] = useLocalStorage(
+    "advancedSettingsEnabled",
+    true,
+  );
   const [imageQualityEnabled, setImageQualityEnabled] = useLocalStorage(
     "imageQualityEnabled",
     false,
@@ -81,20 +84,20 @@ export function CompressionCard() {
     clearCompressionResults,
     removeCompressionResult,
   } = useCompressionUpload(
-    imageQualityEnabled ? imageQuality : 75,
-    trimImageEnabled,
-    trimImageMode,
-    resizeImageEnabled,
-    resizeImageMode,
-    resizeImageWidth,
-    resizeImageHeight,
-    resizeImagePercentage,
-    evenDimensionsEnabled,
-    evenDimensionsMode,
-    evenDimensionsPaddingWidth,
-    evenDimensionsPaddingHeight,
-    appendFilenameEnabled,
-    appendFilenameText,
+    advancedSettingsEnabled ? imageQuality : 75,
+    advancedSettingsEnabled ? trimImageEnabled : false,
+    advancedSettingsEnabled ? trimImageMode : "transparency",
+    advancedSettingsEnabled ? resizeImageEnabled : false,
+    advancedSettingsEnabled ? resizeImageMode : "manual",
+    advancedSettingsEnabled ? resizeImageWidth : null,
+    advancedSettingsEnabled ? resizeImageHeight : null,
+    advancedSettingsEnabled ? resizeImagePercentage : null,
+    advancedSettingsEnabled ? evenDimensionsEnabled : false,
+    advancedSettingsEnabled ? evenDimensionsMode : "add",
+    advancedSettingsEnabled ? evenDimensionsPaddingWidth : "left",
+    advancedSettingsEnabled ? evenDimensionsPaddingHeight : "bottom",
+    advancedSettingsEnabled ? appendFilenameEnabled : false,
+    advancedSettingsEnabled ? appendFilenameText : "",
   );
 
   const compressionFilesList: FileData[] = compressionFileResults.map(
@@ -129,6 +132,24 @@ export function CompressionCard() {
   const allComplete =
     completedCount === compressionFileResults.length &&
     compressionFileResults.length > 0;
+
+  const handleRestoreDefaults = () => {
+    setImageQualityEnabled(false);
+    setImageQuality(75);
+    setTrimImageEnabled(false);
+    setTrimImageMode("transparency");
+    setResizeImageEnabled(false);
+    setResizeImageMode("manual");
+    setResizeImageWidth(null);
+    setResizeImageHeight(null);
+    setResizeImagePercentage(null);
+    setEvenDimensionsEnabled(false);
+    setEvenDimensionsMode("add");
+    setEvenDimensionsPaddingWidth("left");
+    setEvenDimensionsPaddingHeight("bottom");
+    setAppendFilenameEnabled(false);
+    setAppendFilenameText("");
+  };
 
   return (
     <div className="px-4 sm:px-6 lg:px-8">
@@ -204,8 +225,10 @@ export function CompressionCard() {
             </Alert>
           )}
 
-          {/* Advanced Settings Accordion */}
           <AdvancedSettings
+            advancedSettingsEnabled={advancedSettingsEnabled}
+            onAdvancedSettingsEnabledChange={setAdvancedSettingsEnabled}
+            onRestoreDefaults={handleRestoreDefaults}
             imageQualityEnabled={imageQualityEnabled}
             onImageQualityEnabledChange={setImageQualityEnabled}
             imageQuality={imageQuality}
