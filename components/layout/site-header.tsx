@@ -14,14 +14,9 @@ export function SiteHeader() {
         />
         <h1 className="text-base font-medium">Compress your images!</h1>
         <div className="ml-auto flex items-center gap-2">
-          <Button
-            variant="ghost"
-            asChild
-            size="sm"
-            className="px-3"
-          >
+          <Button variant="ghost" asChild size="sm" className="px-3">
             <a
-              href="https://github.com/jlisena/inizio-img-compression"
+              href="https://github.com/jlisena/image-compression-tool"
               rel="noopener noreferrer"
               target="_blank"
               className="dark:text-foreground"
