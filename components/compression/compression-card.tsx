@@ -88,7 +88,7 @@ export function CompressionCard() {
     clearCompressionResults,
     removeCompressionResult,
   } = useCompressionUpload(
-    advancedSettingsEnabled ? imageQuality : 75,
+    advancedSettingsEnabled && imageQualityEnabled ? imageQuality : 75,
     advancedSettingsEnabled ? trimImageEnabled : false,
     advancedSettingsEnabled ? trimImageMode : "transparency",
     advancedSettingsEnabled ? resizeImageEnabled : false,
