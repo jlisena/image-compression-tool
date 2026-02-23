@@ -43,7 +43,7 @@
     "@typescript-eslint/eslint-plugin": "^8.8.1",
     "@typescript-eslint/parser": "^8.8.1",
     "ajv": "^8.18.0",
-    "eslint": "^9.13.0",
+    "eslint": "^10.0.1",
     "eslint-config-next": "^16.1.6",
     "minimatch": "^10.2.1",
     "tailwindcss": "^4",
