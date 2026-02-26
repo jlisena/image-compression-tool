@@ -24,6 +24,10 @@ A web-based image compression tool for optimizing images at scale with flexible 
 - **File Management:** JSZip (batch downloads)
 - **Theme Management:** next-themes
 
+<div align="center">
+  <video src="https://github.com/user-attachments/assets/45a9526f-96af-4f33-801c-01055ed36bd3" controls></video>
+</div>
+
 ## Installation (Local)
 
 ### Prerequisites
