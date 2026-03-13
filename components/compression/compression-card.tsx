@@ -172,112 +172,120 @@ export function CompressionCard() {
             </div>
           ) : (
             <>
-          {/* Top action buttons */}
-          <div className="flex justify-center gap-3 mb-6">
-            <Button
-              variant="positive"
-              onClick={() => document.getElementById("file-input")?.click()}
-              disabled={isCompressing}
-              className="leading-none"
-            >
-              <Upload className="h-4 w-4" />
-              <span className="leading-none">Upload</span>
-            </Button>
-            <Button
-              variant="destructive"
-              onClick={clearCompressionResults}
-              disabled={compressionFilesList.length === 0}
-              className="leading-none"
-            >
-              <X className="h-4 w-4" />
-              <span className="leading-none">Clear</span>
-            </Button>
-          </div>
+              {/* Top action buttons */}
+              <div className="flex justify-center gap-3 mb-6">
+                <Button
+                  variant="positive"
+                  onClick={() => document.getElementById("file-input")?.click()}
+                  disabled={isCompressing}
+                  className="leading-none"
+                >
+                  <Upload className="h-4 w-4" />
+                  <span className="leading-none">Upload</span>
+                </Button>
+                <Button
+                  variant="destructive"
+                  onClick={clearCompressionResults}
+                  disabled={compressionFilesList.length === 0}
+                  className="leading-none"
+                >
+                  <X className="h-4 w-4" />
+                  <span className="leading-none">Clear</span>
+                </Button>
+              </div>
 
-          {/* Dropzone component */}
-          <Dropzone
-            onDrop={handleFilesDrop}
-            isCompressing={isCompressing}
-            compressionFilesList={compressionFilesList}
-            onRemoveFile={removeCompressionResult}
-            appendFilenameEnabled={appendFilenameEnabled}
-            appendFilenameText={appendFilenameText}
-          />
+              {/* Dropzone component */}
+              <Dropzone
+                onDrop={handleFilesDrop}
+                isCompressing={isCompressing}
+                compressionFilesList={compressionFilesList}
+                onRemoveFile={removeCompressionResult}
+                appendFilenameEnabled={
+                  advancedSettingsEnabled && appendFilenameEnabled
+                }
+                appendFilenameText={
+                  advancedSettingsEnabled ? appendFilenameText : ""
+                }
+              />
 
-          {/* Download All button */}
-          <div className="flex justify-center my-6">
-            <Button
-              onClick={() =>
-                downloadBatchAsZip(
-                  compressionFileResults,
-                  appendFilenameEnabled,
-                  appendFilenameText,
-                )
-              }
-              disabled={!allComplete}
-              className="relative leading-none"
-            >
-              <Download className="h-4 w-4" />
-              <span className="leading-none">Download All</span>
-              {compressionFileResults.length > 0 && (
-                <span className="absolute -top-2 -right-2 bg-background text-foreground text-xs font-semibold rounded-full h-5 w-5 flex items-center justify-center border-2 border-primary">
-                  {completedCount}
-                </span>
+              {/* Download All button */}
+              <div className="flex justify-center my-6">
+                <Button
+                  onClick={() =>
+                    downloadBatchAsZip(
+                      compressionFileResults,
+                      advancedSettingsEnabled && appendFilenameEnabled,
+                      advancedSettingsEnabled ? appendFilenameText : "",
+                    )
+                  }
+                  disabled={!allComplete}
+                  className="relative leading-none"
+                >
+                  <Download className="h-4 w-4" />
+                  <span className="leading-none">Download All</span>
+                  {compressionFileResults.length > 0 && (
+                    <span className="absolute -top-2 -right-2 bg-background text-foreground text-xs font-semibold rounded-full h-5 w-5 flex items-center justify-center border-2 border-primary">
+                      {completedCount}
+                    </span>
+                  )}
+                </Button>
+              </div>
+
+              {/* Error alert */}
+              {compressionErrors.length > 0 && (
+                <Alert variant="destructive" className="my-4">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertTitle>Error</AlertTitle>
+                  <AlertDescription>
+                    <ul className="space-y-1">
+                      {compressionErrors.map((error, idx) => (
+                        <li key={idx}>• {error}</li>
+                      ))}
+                    </ul>
+                  </AlertDescription>
+                </Alert>
               )}
-            </Button>
-          </div>
 
-          {/* Error alert */}
-          {compressionErrors.length > 0 && (
-            <Alert variant="destructive" className="my-4">
-              <AlertCircle className="h-4 w-4" />
-              <AlertTitle>Error</AlertTitle>
-              <AlertDescription>
-                <ul className="space-y-1">
-                  {compressionErrors.map((error, idx) => (
-                    <li key={idx}>• {error}</li>
-                  ))}
-                </ul>
-              </AlertDescription>
-            </Alert>
-          )}
-
-          <AdvancedSettings
-            advancedSettingsEnabled={advancedSettingsEnabled}
-            onAdvancedSettingsEnabledChange={setAdvancedSettingsEnabled}
-            onRestoreDefaults={handleRestoreDefaults}
-            imageQualityEnabled={imageQualityEnabled}
-            onImageQualityEnabledChange={setImageQualityEnabled}
-            imageQuality={imageQuality}
-            onImageQualityChange={setImageQuality}
-            trimImageEnabled={trimImageEnabled}
-            onTrimImageEnabledChange={setTrimImageEnabled}
-            trimImageMode={trimImageMode}
-            onTrimImageModeChange={setTrimImageMode}
-            resizeImageEnabled={resizeImageEnabled}
-            onResizeImageEnabledChange={setResizeImageEnabled}
-            resizeImageMode={resizeImageMode}
-            onResizeImageModeChange={setResizeImageMode}
-            resizeImageWidth={resizeImageWidth}
-            onResizeImageWidthChange={setResizeImageWidth}
-            resizeImageHeight={resizeImageHeight}
-            onResizeImageHeightChange={setResizeImageHeight}
-            resizeImagePercentage={resizeImagePercentage}
-            onResizeImagePercentageChange={setResizeImagePercentage}
-            evenDimensionsEnabled={evenDimensionsEnabled}
-            onEvenDimensionsEnabledChange={setEvenDimensionsEnabled}
-            evenDimensionsMode={evenDimensionsMode}
-            onEvenDimensionsModeChange={setEvenDimensionsMode}
-            evenDimensionsPaddingWidth={evenDimensionsPaddingWidth}
-            onEvenDimensionsPaddingWidthChange={setEvenDimensionsPaddingWidth}
-            evenDimensionsPaddingHeight={evenDimensionsPaddingHeight}
-            onEvenDimensionsPaddingHeightChange={setEvenDimensionsPaddingHeight}
-            appendFilenameEnabled={appendFilenameEnabled}
-            onAppendFilenameEnabledChange={setAppendFilenameEnabled}
-            appendFilenameText={appendFilenameText}
-            onAppendFilenameTextChange={setAppendFilenameText}
-            compressionLogs={compressionLogs}
-          />
+              <AdvancedSettings
+                advancedSettingsEnabled={advancedSettingsEnabled}
+                onAdvancedSettingsEnabledChange={setAdvancedSettingsEnabled}
+                onRestoreDefaults={handleRestoreDefaults}
+                imageQualityEnabled={imageQualityEnabled}
+                onImageQualityEnabledChange={setImageQualityEnabled}
+                imageQuality={imageQuality}
+                onImageQualityChange={setImageQuality}
+                trimImageEnabled={trimImageEnabled}
+                onTrimImageEnabledChange={setTrimImageEnabled}
+                trimImageMode={trimImageMode}
+                onTrimImageModeChange={setTrimImageMode}
+                resizeImageEnabled={resizeImageEnabled}
+                onResizeImageEnabledChange={setResizeImageEnabled}
+                resizeImageMode={resizeImageMode}
+                onResizeImageModeChange={setResizeImageMode}
+                resizeImageWidth={resizeImageWidth}
+                onResizeImageWidthChange={setResizeImageWidth}
+                resizeImageHeight={resizeImageHeight}
+                onResizeImageHeightChange={setResizeImageHeight}
+                resizeImagePercentage={resizeImagePercentage}
+                onResizeImagePercentageChange={setResizeImagePercentage}
+                evenDimensionsEnabled={evenDimensionsEnabled}
+                onEvenDimensionsEnabledChange={setEvenDimensionsEnabled}
+                evenDimensionsMode={evenDimensionsMode}
+                onEvenDimensionsModeChange={setEvenDimensionsMode}
+                evenDimensionsPaddingWidth={evenDimensionsPaddingWidth}
+                onEvenDimensionsPaddingWidthChange={
+                  setEvenDimensionsPaddingWidth
+                }
+                evenDimensionsPaddingHeight={evenDimensionsPaddingHeight}
+                onEvenDimensionsPaddingHeightChange={
+                  setEvenDimensionsPaddingHeight
+                }
+                appendFilenameEnabled={appendFilenameEnabled}
+                onAppendFilenameEnabledChange={setAppendFilenameEnabled}
+                appendFilenameText={appendFilenameText}
+                onAppendFilenameTextChange={setAppendFilenameText}
+                compressionLogs={compressionLogs}
+              />
             </>
           )}
         </CardContent>
