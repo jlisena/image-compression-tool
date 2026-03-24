@@ -1,0 +1,41 @@
+name: Auto Merge Main to Release
+
+on:
+  schedule:
+    - cron: "0 16 * * *" # 9am daily
+
+jobs:
+  merge-to-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check if there are changes between main and release
+        id: check-changes
+        run: |
+          # Fetch branches
+          git fetch origin main release || true
+
+          # Compare commits between main and release
+          COMMIT_DIFF=$(git log --oneline origin/release..origin/main 2>/dev/null | wc -l)
+
+          if [ "$COMMIT_DIFF" -gt 0 ]; then
+            echo "Found $COMMIT_DIFF new commits on main"
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "No new commits to merge"
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Auto merge main into release
+        if: steps.check-changes.outputs.has_changes == 'true'
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+          git checkout release || git checkout -b release
+          git merge --no-ff origin/main -m "chore: merge main into release [automated]"
+          git push origin release
