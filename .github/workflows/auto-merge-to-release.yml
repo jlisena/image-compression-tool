@@ -4,6 +4,9 @@ on:
   schedule:
     - cron: "0 16 * * *" # 9am daily
 
+permissions:
+  contents: write
+
 jobs:
   merge-to-release:
     runs-on: ubuntu-latest
