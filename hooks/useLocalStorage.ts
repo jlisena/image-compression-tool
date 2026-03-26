@@ -2,12 +2,7 @@
 
 import { useState, useEffect } from "react";
 
-/**
- * A hook that syncs a value to localStorage
- * @param key - The localStorage key
- * @param initialValue - The default value if nothing is stored
- * @returns [value, setValue] - Like useState, but persisted to localStorage
- */
+// A hook that syncs a value to localStorage
 export function useLocalStorage<T>(
   key: string,
   initialValue: T
