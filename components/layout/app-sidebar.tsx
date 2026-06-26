@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Code, Send, House, ListTodo } from "lucide-react";
+import { House, ListTodo } from "lucide-react";
 import InizioLogo from "@/components/layout/logo-svg";
 import { NavMain } from "@/components/layout/nav-main";
 import {
@@ -14,16 +14,6 @@ import {
 
 const data = {
   navMain: [
-    {
-      title: "MailFlow",
-      url: "https://melt.runmailflow.com/",
-      icon: Code,
-    },
-    {
-      title: "ElephantMail",
-      url: "https://meltmail.prod.martech.totem.haus/",
-      icon: Send,
-    },
     {
       title: "Confluence",
       url: "https://evoke-melt.atlassian.net/wiki/spaces/EL/overview",
